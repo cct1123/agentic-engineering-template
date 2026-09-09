@@ -1,0 +1,1293 @@
+Create a reusable project template for an **autonomous agentic engineering system**.
+
+The template should provide a minimal, human-readable framework for persistent autonomous engineering—from engineering objective and requirements through design, implementation, testing, debugging, integration, and validated completion.
+
+It should support projects involving:
+
+* hardware engineering
+* electronics and instrumentation
+* device control
+* embedded systems and firmware
+* communication protocols
+* software interfaces and APIs
+* automation and orchestration
+* data acquisition
+* calibration
+* hardware/software integration
+* testing and validation
+* debugging and diagnostics
+
+The result should be a **working reusable project template**, not merely a description of one.
+
+---
+
+# Purpose
+
+The intended workflow is:
+
+1. A human creates a project from the template.
+2. The human provides only the minimum necessary information:
+
+   * engineering objective
+   * requirements / acceptance criteria
+   * constraints
+   * available hardware/software
+   * private or project-specific context
+   * existing files, documentation, code, or data
+3. The autonomous engineering agent reads the project and takes ownership of the task.
+4. The agent determines the current system state.
+5. The agent identifies the most consequential gap between the current system and the required system.
+6. The agent autonomously chooses the next engineering action.
+7. It designs, implements, tests, diagnoses, and iterates.
+8. It maintains persistent project state and durable engineering records.
+9. It continues until:
+
+   * the engineering objective is validated;
+   * further progress requires unavailable information or hardware;
+   * or a controlled human action is required.
+10. A fresh human or agent should be able to understand and continue the project from the persistent project files without relying on previous conversation history.
+
+The normal human workflow should be approximately:
+
+**Create project → define objective and requirements → provide relevant context/files → start agent → inspect validated result**
+
+---
+
+# Core Design Principles
+
+## Minimal initialization
+
+Require as little human-written setup as reasonably possible.
+
+Do not ask the human to create a detailed implementation plan that the engineering agent can determine itself.
+
+A new project should ideally require editing only one or two short files.
+
+---
+
+## Requirement-driven autonomy
+
+The human defines:
+
+* what must be achieved
+* important constraints
+* acceptance criteria
+* available resources
+
+The agent determines:
+
+* what to inspect
+* what to design
+* what to implement
+* what to test
+* what to diagnose
+* what to do next
+
+Do not encode a rigid implementation sequence.
+
+---
+
+## Iterative engineering
+
+The central autonomous loop is:
+
+**Requirements
+→ Inspect Current State
+→ Identify Highest-Priority Gap
+→ Choose Engineering Action
+→ Design / Implement
+→ Test / Measure
+→ Diagnose / Evaluate
+→ Update Persistent State
+→ Requirements Satisfied?
+→ Repeat**
+
+Make this loop explicit in both the operating instructions and architecture diagram.
+
+The agent should revise its plan whenever implementation or testing produces new evidence.
+
+---
+
+## Gap-driven decision making
+
+At each iteration, choose the next action according to this principle:
+
+> **Choose the engineering action most likely to close the most consequential gap between the current system and the required system at reasonable cost and risk.**
+
+The gap may be:
+
+* missing functionality
+* uncertain interface behavior
+* failed test
+* incorrect configuration
+* missing calibration
+* integration failure
+* unresolved hardware issue
+* software defect
+* insufficient performance
+* missing validation
+
+Do not continue working on already-satisfied requirements without a clear reason.
+
+---
+
+## Evidence-driven engineering
+
+Engineering conclusions should be grounded in actual evidence such as:
+
+* measurements
+* test results
+* device responses
+* logs
+* calculations
+* simulations
+* manufacturer documentation
+* standards
+* source-code inspection
+* calibration results
+* reproducible observed behavior
+
+Implementation alone does not establish success.
+
+**Requirement implemented ≠ requirement validated.**
+
+---
+
+## Persistent state
+
+Maintain a concise canonical representation of the current engineering state.
+
+It should survive:
+
+* interruptions
+* context loss
+* agent replacement
+* long projects
+* handoff between humans and agents
+
+A fresh agent should not need to reconstruct the project by reading the entire work history.
+
+---
+
+## Human-readable and agent-readable
+
+Prefer simple transparent formats:
+
+* Markdown
+* source code
+* plain text
+* CSV where useful
+* JSON/YAML only where structured data materially helps
+
+Avoid unnecessary proprietary tooling or complicated databases.
+
+---
+
+## Low bureaucracy
+
+Create only files and structures that materially improve:
+
+* autonomy
+* implementation
+* validation
+* debugging
+* safety
+* traceability
+* reproducibility
+* handoff
+* operation
+
+Do not build an enterprise project-management system.
+
+---
+
+# Project Architecture
+
+Model the engineering template after a minimal persistent workspace.
+
+Prefer a compact core resembling:
+
+```text
+agentic-engineering-template/
+├── README.md
+├── PROJECT.md
+├── AGENTS.md
+├── ARCHITECTURE.md
+├── STATE.md
+├── records/
+│   └── RECORDS.md
+└── outputs/
+    └── REPORT.md
+```
+
+Do not blindly use this exact tree if a simpler or clearer organization works better.
+
+Directories such as the following should be **optional and created only when needed**:
+
+```text
+inputs/
+hardware/
+interfaces/
+software/
+firmware/
+tests/
+measurements/
+analysis/
+docs/
+```
+
+The core template should remain small.
+
+Separate clearly:
+
+**Human-authored intent**
+from
+**Agent-maintained state**
+from
+**Engineering artifacts**
+from
+**Evidence / test records**
+from
+**Final outputs**
+
+---
+
+# PROJECT.md
+
+Create a concise human-facing project definition.
+
+It should contain only information the human needs to supply.
+
+Suggested sections:
+
+## Engineering Objective
+
+What should the completed system accomplish?
+
+This should be the primary required field.
+
+## Requirements / Acceptance Criteria
+
+What observable conditions define success?
+
+Use measurable criteria where possible.
+
+## Constraints
+
+Examples:
+
+* available hardware
+* operating ranges
+* compatibility
+* interfaces
+* safety limits
+* budget
+* materials
+* environment
+* software/platform constraints
+
+## Available System
+
+Existing:
+
+* hardware
+* devices
+* code
+* firmware
+* documentation
+* datasets
+* schematics
+* interfaces
+* test equipment
+
+## Project-Specific Context
+
+Information the agent cannot reasonably discover independently.
+
+Keep this optional.
+
+Do not require the human to reproduce public documentation or obvious engineering background.
+
+---
+
+# AGENTS.md
+
+Create the canonical operating instructions for an autonomous engineering agent.
+
+It should be concise enough to remain usable but complete enough to govern long-running autonomous work.
+
+The agent should follow approximately this loop.
+
+---
+
+## 1. Inspect
+
+Read:
+
+* `PROJECT.md`
+* `STATE.md`
+* relevant records
+* current code
+* hardware/interface information
+* test results
+* configuration
+* relevant documentation
+
+Determine:
+
+* what already exists
+* what works
+* what has been validated
+* what is incomplete
+* what is failing
+
+Do not rebuild functioning components unnecessarily.
+
+---
+
+## 2. Identify the highest-priority gap
+
+Compare:
+
+**required state**
+
+with
+
+**current state**
+
+Determine the most consequential unresolved gap.
+
+Consider:
+
+* requirement importance
+* dependency structure
+* uncertainty
+* engineering risk
+* likelihood of blocking other work
+* expected impact
+* cost of investigation
+* reversibility
+
+Select one useful next engineering action.
+
+---
+
+## 3. Design
+
+Develop the simplest viable solution.
+
+Before implementation, consider:
+
+* system architecture
+* interfaces
+* dependencies
+* compatibility
+* operating limits
+* expected data/control flow
+* timing
+* likely failure modes
+* configuration
+* validation strategy
+* reversibility
+
+Avoid unnecessary complexity.
+
+---
+
+## 4. Implement
+
+Implement the selected engineering change.
+
+Possible actions include:
+
+* writing or modifying software
+* writing device drivers
+* implementing communication protocols
+* creating APIs
+* creating firmware
+* configuring devices
+* generating schematics or wiring information
+* designing control logic
+* creating acquisition software
+* implementing automation
+* integrating components
+* creating simulation models
+* preparing hardware changes
+* producing diagnostic tools
+
+Keep changes focused and testable.
+
+---
+
+## 5. Test / Measure
+
+Translate requirements into explicit tests wherever possible.
+
+Use the relationship:
+
+**Requirement → Test → Result → Pass / Fail**
+
+Testing may include:
+
+* unit tests
+* device communication tests
+* interface tests
+* integration tests
+* simulation
+* calibration
+* performance measurement
+* timing tests
+* noise measurements
+* error-handling tests
+* regression tests
+* system-level acceptance tests
+
+Prefer measurable results over subjective judgment.
+
+---
+
+## 6. Diagnose
+
+If something fails:
+
+1. reproduce the failure;
+2. isolate the smallest failing subsystem;
+3. generate plausible failure hypotheses;
+4. choose a diagnostic test that best distinguishes them;
+5. perform the test;
+6. update the diagnosis;
+7. fix the likely root cause;
+8. rerun the relevant tests;
+9. check for regressions.
+
+Distinguish among failure classes such as:
+
+* hardware
+* wiring
+* power
+* electrical compatibility
+* communication
+* timing
+* firmware
+* driver
+* configuration
+* calibration
+* software logic
+* API behavior
+* measurement artifact
+* test error
+* incorrect assumption
+
+Avoid uncontrolled trial-and-error.
+
+---
+
+## 7. Update Persistent State
+
+After meaningful progress, update `STATE.md`.
+
+Record conclusions, not private chain-of-thought.
+
+Useful examples:
+
+* what now works
+* what changed
+* what was validated
+* current configuration
+* important failures
+* failure diagnosis
+* unresolved issues
+* relevant constraints
+* next action
+
+For example:
+
+> Streaming timeout traced to command-per-sample acquisition. Buffered acquisition implemented and integration test T012 now passes.
+
+Do not maintain a transcript of every reasoning step.
+
+---
+
+## 8. Evaluate Completion
+
+Ask:
+
+**Are all relevant requirements satisfied and validated?**
+
+If **No**:
+
+→ identify the next highest-priority gap
+→ repeat the loop
+
+If **Yes**:
+
+→ perform final validation
+→ produce the final engineering report
+
+If **Blocked**:
+
+→ determine whether a precise human or external action is required.
+
+---
+
+# STATE.md
+
+Create a compact canonical engineering checkpoint.
+
+It is **not a chronological work log**.
+
+It should allow a new agent to understand the project quickly.
+
+Suggested structure:
+
+## Status
+
+Current overall engineering status.
+
+## Objective
+
+Short restatement of the active goal.
+
+## Requirements Status
+
+Important requirements categorized as:
+
+* PASS
+* FAIL
+* UNTESTED
+* BLOCKED
+
+Do not duplicate full requirement descriptions unnecessarily.
+
+## Current System
+
+Brief architecture and implementation state.
+
+## Working / Validated
+
+What currently works and has evidence supporting it?
+
+## Current Gaps
+
+What remains incomplete?
+
+## Known Failures
+
+Important unresolved failures and current diagnosis.
+
+## Current Configuration
+
+Only configuration necessary for reproducibility or operation.
+
+Examples:
+
+* device addresses
+* relevant firmware/software versions
+* communication parameters
+* important hardware configuration
+* calibration state
+
+## Current Priority
+
+Highest-priority engineering gap.
+
+## Next Action
+
+What should happen next and why?
+
+## Blockers
+
+Any action or information preventing progress.
+
+## Human Action Required
+
+Leave empty unless human intervention is genuinely needed.
+
+## Completion Status
+
+Why the system is or is not complete.
+
+Keep `STATE.md` concise.
+
+Detailed evidence and history belong elsewhere.
+
+---
+
+# Engineering Records
+
+Create a durable record system analogous to scientific evidence records.
+
+Use stable IDs.
+
+For example:
+
+```text
+E001
+E002
+E003
+...
+```
+
+for engineering evidence, tests, measurements, or important observations.
+
+And:
+
+```text
+D001
+D002
+D003
+...
+```
+
+for consequential design or diagnostic decisions.
+
+A record should contain enough information to understand the engineering result without reading the full historical conversation.
+
+Example:
+
+```markdown
+## E014
+
+Kind: measurement
+
+Claim:
+USB communication becomes unreliable above ~55 command transactions/s.
+
+Method:
+tests/usb_rate_test.py
+
+Configuration:
+Firmware 1.8.2, driver commit abc123
+
+Result:
+0 failures below 50/s; repeated timeout failures at 55–60/s.
+
+Bearing:
+Current command-per-sample architecture cannot satisfy REQ-07.
+```
+
+Example decision:
+
+```markdown
+## D006
+
+Decision:
+Use buffered acquisition rather than command-per-sample acquisition.
+
+Basis:
+E014, E016
+
+Consequence:
+Driver acquisition path redesigned around device-side buffering.
+
+Reconsider if:
+Future firmware provides reliable asynchronous streaming.
+```
+
+Records should capture **engineering conclusions and their basis**, not hidden reasoning.
+
+---
+
+# Requirements and Validation
+
+Keep requirement management lightweight.
+
+Each important requirement should have:
+
+* identifier
+* requirement
+* acceptance criterion
+* validation method
+* status
+
+Example:
+
+```text
+REQ-03
+Acquire temperature at ≥10 Hz with RMS noise <0.1 °C.
+```
+
+Validation:
+
+```text
+TEST-07
+Acquire 10 minutes at 20 Hz and compute RMS noise.
+```
+
+Result:
+
+```text
+PASS
+```
+
+The autonomous agent should use requirement status to determine what remains to be done.
+
+---
+
+# Interfaces
+
+Treat important interfaces as first-class engineering boundaries.
+
+Where relevant, document:
+
+* connected components
+* physical interface
+* electrical constraints
+* communication protocol
+* addresses / ports
+* units
+* command/message structure
+* initialization
+* timing
+* timeout behavior
+* errors
+* ownership of state
+* relevant implementation files
+
+For device-control systems, prefer an architecture such as:
+
+**Physical Device
+→ Transport / Protocol
+→ Device Driver
+→ Normalized Software Interface
+→ Orchestration / Application**
+
+Keep low-level device-specific behavior separate from higher-level application logic where practical.
+
+---
+
+# Hardware
+
+The system should support relevant project information such as:
+
+* device identity
+* model
+* purpose
+* physical connection
+* electrical interface
+* operating limits
+* configuration
+* calibration
+* dependencies
+* current status
+
+Do not copy entire manufacturer manuals into the project.
+
+Record only information important to the project and preserve references to authoritative documentation.
+
+---
+
+# Software
+
+For engineering software:
+
+* preserve existing project conventions where sensible
+* prefer modular components
+* keep interfaces explicit
+* separate device drivers from orchestration
+* avoid unexplained constants
+* centralize configuration where useful
+* validate inputs and device responses
+* implement meaningful timeouts
+* handle communication failures
+* provide useful diagnostic errors
+* add tests for important behavior
+* avoid unnecessary dependencies
+* do not refactor working code merely for style
+
+Prefer the smallest change that satisfies the engineering requirement.
+
+---
+
+# Configuration
+
+Track configuration that materially affects operation or reproducibility.
+
+Examples:
+
+* communication port
+* baud rate
+* device address
+* acquisition settings
+* calibration parameters
+* firmware version
+* hardware variant
+* timing parameters
+
+Separate configuration from implementation where appropriate.
+
+Do not store secrets in persistent project files.
+
+---
+
+# Calibration
+
+When applicable, treat calibration separately from simple functionality.
+
+A device may function correctly while still producing uncalibrated measurements.
+
+Calibration records should contain:
+
+* calibrated quantity
+* method
+* reference
+* configuration
+* result
+* uncertainty where meaningful
+* validity assumptions
+
+---
+
+# Regression Protection
+
+Previously validated functionality should not silently become invalid.
+
+After consequential changes:
+
+* rerun relevant earlier tests;
+* update requirement status if regression occurs;
+* treat broken previously validated behavior as a new engineering gap.
+
+---
+
+# Planning
+
+Allow the agent to create an adaptive working plan.
+
+Prefer:
+
+* current milestone
+* current gap
+* next few likely actions
+* dependencies
+
+Do not require a speculative end-to-end implementation plan before engineering begins.
+
+Plans must change when evidence changes.
+
+---
+
+# Specialized Agents / Parallel Work
+
+Allow optional subagent delegation.
+
+Possible roles include:
+
+* Engineering Coordinator
+* Hardware Agent
+* Device-Control Agent
+* Software Agent
+* Test Agent
+* Diagnostics Agent
+* Documentation Agent
+
+However:
+
+* do not require multiple agents for simple projects;
+* treat “Engineering Director” as a coordinating role, not necessarily a separate persistent agent;
+* delegate only bounded tasks;
+* all agents must use the same canonical project state;
+* avoid independent conflicting versions of the engineering state;
+* integrate subagent outputs before updating canonical conclusions.
+
+A single capable agent should be able to operate the complete system.
+
+---
+
+# Physical Action and Authority Boundary
+
+Engineering may affect real physical systems.
+
+The template must explicitly distinguish **ability to execute an action** from **authority to execute it**.
+
+Conceptually classify actions as:
+
+## Information / Analysis
+
+Examples:
+
+* read files
+* inspect documentation
+* inspect code
+* analyze data
+* calculate
+* simulate
+
+Normally autonomous.
+
+## Local Reversible Implementation
+
+Examples:
+
+* modify source code
+* create tests
+* generate configuration
+* create proposed commands
+* run software-only tests
+
+Normally autonomous within the project environment.
+
+## Device Read
+
+Examples:
+
+* query identity
+* read status
+* retrieve measurement
+
+May be autonomous when authorized and low-risk.
+
+## Device Write / Configuration
+
+Examples:
+
+* modify setpoints
+* change persistent parameters
+* issue control commands
+* flash firmware
+
+Require consideration of:
+
+* operating limits
+* reversibility
+* system state
+* potential consequences
+
+## Physical Actuation / High-Consequence Actions
+
+Examples:
+
+* apply significant power
+* energize actuators
+* move stages
+* operate lasers
+* control heaters
+* control pressure
+* alter safety interlocks
+* perform destructive tests
+* issue commands capable of damaging equipment or samples
+
+Require appropriate safeguards and human approval when warranted.
+
+The agent should never infer that possession of an interface automatically grants permission for consequential physical actions.
+
+---
+
+# Human Intervention
+
+The autonomous system should minimize routine human questions.
+
+Make reasonable autonomous decisions when they are:
+
+* low-risk
+* reversible
+* supported by available information
+* consistent with project requirements
+
+Request human intervention only when genuinely needed, for example:
+
+* physical access is required;
+* a cable/device must be moved or connected;
+* a potentially damaging action is necessary;
+* purchasing is required;
+* credentials or external authorization are required;
+* an important private fact is unavailable;
+* a consequential irreversible change is required;
+* a major tradeoff depends on human priorities;
+* the engineering objective itself must change.
+
+When requesting intervention, specify:
+
+1. what is currently known;
+2. what is blocked;
+3. why autonomous work cannot resolve it;
+4. the exact human action or information required;
+5. what result should be returned;
+6. how work will resume afterward.
+
+Prefer:
+
+> Measure voltage between TP3 and ground with the output disabled and report the value.
+
+over:
+
+> Please check the hardware.
+
+---
+
+# Completion Criteria
+
+The engineering project is complete only when the relevant conditions are satisfied:
+
+* required functionality exists;
+* acceptance criteria have been tested;
+* relevant tests pass;
+* critical interfaces are validated;
+* critical integration failures are resolved;
+* important configuration is documented;
+* calibration is complete where required;
+* operation is reproducible;
+* remaining limitations are explicitly documented.
+
+Valid completion does not require claiming perfection.
+
+The project may finish with documented non-critical limitations.
+
+If the remaining blocker fundamentally requires unavailable hardware, new hardware, physical intervention, or inaccessible information, the project may also finish in a clearly documented **blocked / externally dependent** state.
+
+---
+
+# Final Report
+
+Create `outputs/REPORT.md`.
+
+It should summarize the resulting engineered system rather than narrate the entire agent history.
+
+Include where relevant:
+
+* engineering objective
+* final system
+* architecture
+* implemented functionality
+* requirement status
+* hardware configuration
+* software architecture
+* interfaces
+* validation results
+* calibration status
+* operating instructions
+* known limitations
+* unresolved issues
+* important safety constraints
+* important engineering decisions
+* references
+* recommended future improvements
+
+The final report should make clear what was actually demonstrated.
+
+---
+
+# ARCHITECTURE.md
+
+Create a concise Mermaid flowchart showing the autonomous engineering architecture.
+
+Make the closed loop visually explicit:
+
+**Requirements / State
+→ Identify Gap
+→ Design / Implement
+→ Test / Measure
+→ Diagnose / Evaluate
+→ Update State
+→ Requirements Satisfied?**
+
+Decision paths:
+
+**No**
+→ identify next gap
+→ repeat
+
+**Yes**
+→ final validation
+→ engineering report
+
+**Blocked / Controlled Action**
+→ human intervention
+→ update project state
+→ resume loop
+
+Also show:
+
+* Human
+* Project Workspace
+* Engineering Coordinator
+* optional engineering capabilities/subagents
+* external hardware/software/resources
+* persistent state
+* final output
+
+Keep the Mermaid diagram minimal, readable on GitHub, and understandable by humans and AI agents.
+
+---
+
+# README.md
+
+Create a concise README explaining:
+
+* what the template is;
+* what engineering projects it supports;
+* the project architecture;
+* the autonomous engineering loop;
+* which files humans normally edit;
+* which files agents maintain;
+* how to start a project;
+* how to inspect progress;
+* how interruption/handoff works;
+* when human intervention occurs;
+* how completion is determined.
+
+A new user should understand the system within a few minutes.
+
+---
+
+# Resumability and Handoff
+
+Assume the agent performing a later iteration may be completely different from the agent that began the project.
+
+A fresh agent should normally need to read only:
+
+1. `PROJECT.md`
+2. `STATE.md`
+3. `AGENTS.md`
+
+and then inspect referenced evidence or artifacts as needed.
+
+Do not rely on hidden conversational memory.
+
+Historical records may exist for traceability, but normal resumption should not require reading the full history.
+
+---
+
+# Template Scalability
+
+The same framework should work for:
+
+* a single-device control script
+* a laboratory instrument driver
+* a sensor integration project
+* an embedded system
+* an electronics prototype
+* a hardware/software interface
+* a multi-device control platform
+* an automated experimental system
+* a complex engineering project involving multiple agents
+
+The project structure should expand only when necessary.
+
+---
+
+# Self-Review
+
+After creating the template, simulate these scenarios.
+
+## Scenario 1 — Minimal initialization
+
+The human provides:
+
+* one-paragraph engineering objective
+* several requirements
+* available hardware
+* existing code
+* device manuals
+
+Verify that the agent can start without unnecessary clarification.
+
+## Scenario 2 — Device driver
+
+A device must be controlled through a documented protocol.
+
+Verify that the framework supports:
+
+* protocol inspection
+* driver implementation
+* testing
+* clean software interface
+* state update
+* validation
+
+## Scenario 3 — Integration failure
+
+Two individually functioning components fail when integrated.
+
+Verify that the agent can:
+
+* reproduce the problem
+* generate competing diagnoses
+* isolate the failing subsystem
+* perform discriminating tests
+* fix the root cause
+* rerun validation
+
+## Scenario 4 — Hardware intervention
+
+Progress requires a physical measurement or connection change.
+
+Verify that the agent requests one precise human action and resumes immediately after receiving the result.
+
+## Scenario 5 — Agent handoff
+
+Replace the current agent with a fresh capable agent.
+
+Verify that it can understand:
+
+* objective
+* current architecture
+* what works
+* what fails
+* important evidence
+* next action
+
+without reconstructing the complete history.
+
+## Scenario 6 — Regression
+
+A new change breaks previously validated functionality.
+
+Verify that regression testing detects it and the issue returns to the engineering loop.
+
+## Scenario 7 — Completion
+
+All acceptance criteria pass.
+
+Verify that the agent:
+
+* performs final validation
+* records the working configuration
+* updates persistent state
+* creates operating documentation
+* produces the final report
+* clearly states remaining limitations
+
+---
+
+# Simplification Pass
+
+After building and testing the template, simplify it.
+
+Remove or merge any component that does not clearly improve:
+
+* autonomous engineering
+* validation
+* debugging
+* physical safety
+* persistent state
+* reproducibility
+* traceability
+* handoff
+* human readability
+
+Prefer a small framework that remains accurate and maintained over an elaborate framework that becomes stale.
+
+---
+
+# Deliverables
+
+Create the complete reusable repository template and populate all essential files.
+
+Do not merely describe what should be created.
+
+At completion, provide:
+
+1. final directory tree;
+2. short architecture explanation;
+3. files normally edited by humans;
+4. files maintained by agents;
+5. minimum information required to start a project;
+6. autonomous engineering loop;
+7. physical-action / human-intervention policy;
+8. completion criteria;
+9. exact short launch prompt for a new engineering project.
+
+The launch interaction should ideally be no more complicated than:
+
+> Read `PROJECT.md`, `AGENTS.md`, and the current project state. Take ownership of the engineering objective and begin autonomous engineering. Continue the design–implement–test–diagnose loop until the requirements are validated or a genuine external blocker requires human intervention.
