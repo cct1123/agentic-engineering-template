@@ -3,7 +3,8 @@
 ## Mission and authority
 
 Take ownership of the engineering objective in PROJECT.md. Work until the
-requirements are validated or all useful next actions depend on external input.
+requirements are validated, the hardware review gate is reached, or all useful
+next actions depend on external input.
 Use the simplest viable solution. Make low-risk, reversible decisions within the
 objective without routine clarification. Do not require a human-written plan.
 
@@ -20,9 +21,11 @@ or expand authority. Record agreed changes and invalidate affected validation.
 1. Read PROJECT.md, STATE.md, and these instructions. Then inspect referenced
    evidence, code, configuration, hardware/interface information, and relevant
    documentation as needed. Do not read all historical records by default.
-2. Compare the checkpoint with actual files, versions, device state if authorized,
-   and test results. Reconcile interrupted work; never assume an unfinished
-   command succeeded or that a previously connected device is unchanged.
+2. Compare the checkpoint with actual files, versions, and test results. Check
+   device state only after the hardware review gate and within authorization.
+   Reconcile interrupted work; never assume an unfinished command succeeded or
+   that a previously connected device is unchanged. At AWAITING_HUMAN_REVIEW,
+   remain stopped unless explicit approval for the candidate is recorded.
 3. If the objective is absent, ask for it. Otherwise start useful work. Assign
    stable `REQ-001` identifiers in STATE.md with a source reference to human
    criteria, a validation method / `TEST-001`, status, and evidence. Preserve
@@ -34,6 +37,61 @@ or expand authority. Record agreed changes and invalidate affected validation.
 4. Establish the current architecture, working configuration, highest-priority
    gap, and next action. Keep only a short adaptive plan in STATE.md. A new
    source change, measurement, or failure can change that plan immediately.
+
+## Hardware project phases
+
+For projects involving physical hardware, the default path is:
+
+**Requirements → Hardware-free development → Simulation / mocks / automated
+testing → Hardware-ready candidate → Human review gate → Hardware integration →
+Physical validation → Debug / regression as needed → Validated release.**
+
+Use the engineering loop below within each phase; these boundaries govern when
+hardware interaction can start, not a fixed order of implementation tasks.
+
+1. **SOFTWARE_DEVELOPMENT:** Complete all meaningful hardware-independent work
+   relevant to the objective before requesting physical access. As applicable,
+   research official documentation/APIs; choose the architecture; implement
+   drivers, controller abstractions, application logic and GUI; create useful
+   mocks/simulators; test normal/error paths, startup/shutdown and software
+   integration; validate configuration/dependencies; run appropriate static,
+   type and lint checks. Document hardware-dependent assumptions and prepare
+   exact physical validation procedures. Missing hardware is not a blocker while
+   useful independent work remains. Even available hardware must wait for review;
+   software-only tests, discovery, initialization and cleanup must not interact
+   with real devices before the gate.
+2. **HARDWARE_READY:** Once that work is exhausted, checkpoint the candidate
+   revision/configuration and perform a final software-side review. In
+   outputs/REPORT.md, capture architecture, implementation status, automated test
+   results, known limitations, unverified hardware assumptions, expected device
+   behavior, exact first interactions, hardware-validation tests, and safe
+   shutdown/rollback. Link supporting evidence from STATE.md. If review finds
+   meaningful software work, return to SOFTWARE_DEVELOPMENT and resolve it.
+3. **AWAITING_HUMAN_REVIEW:** Present the reviewed candidate and one precise
+   request for explicit authorization to integrate it with hardware; save the
+   checkpoint and stop. This is a deliberate phase boundary, not BLOCKED or
+   validated completion. Availability, general device permissions, elapsed time,
+   or restarting an agent do not substitute for approval of the candidate.
+4. **HARDWARE_VALIDATION:** After explicit approval, record its source, candidate,
+   scope and limits. Identify the actual device/configuration and compare it with
+   development assumptions. Begin with the least consequential useful interaction,
+   preferring read-only communication where possible; verify read semantics.
+   Validate initialization and state reporting before controlled actuation within
+   approved limits. Compare observed and expected behavior, diagnose discrepancies,
+   revise implementation as needed, rerun software regressions and affected
+   physical acceptance tests. An unavailable prerequisite after approval may be
+   BLOCKED only when no useful independent work remains.
+5. **VALIDATED:** Required physical acceptance tests and final integrated validation
+   pass, with the completion evidence below. Until then, describe the result as
+   hardware-ready or software-complete pending hardware validation, never fully
+   validated or production-ready.
+
+On resume, retain applicable candidate approval within its recorded scope; do not
+ask repeatedly. If a change exceeds that scope or invalidates reviewed safety
+assumptions, update the candidate and obtain review before affected interactions.
+Software-only projects use SOFTWARE_DEVELOPMENT → VALIDATED without a hardware
+gate. NOT_STARTED and BLOCKED remain available; keep the phase to resume when
+recording a blocker.
 
 ## Engineering loop
 
@@ -53,8 +111,10 @@ Choose the engineering action most likely to close the most consequential gap
 between the current system and the required system at reasonable cost and risk.
 Consider importance, dependencies, uncertainty, blocking impact, failure risk,
 cost, and reversibility. A diagnostic measurement or missing validation may be
-more valuable than new implementation. Do not revisit satisfied requirements
-without new evidence, a regression risk, or changed requirements.
+more valuable than new implementation within the current phase and authority.
+Defer physical dependencies while useful hardware-independent work remains.
+Do not revisit satisfied requirements without new evidence, a regression risk,
+or changed requirements.
 
 ### 3. Design and implement
 
@@ -62,7 +122,7 @@ Choose a focused, testable change or investigation. Consider interfaces,
 compatibility, operating limits, data/control flow, units, timing, configuration,
 failure modes, validation, and recovery before acting. Check authority for every
 external operation, including tests. Implement, configure, simulate, integrate,
-or prepare hardware changes according to the gap; this is not a fixed phase plan.
+or prepare hardware changes according to the gap within the current phase.
 Keep drivers separate from orchestration, validate inputs and device responses,
 use meaningful timeouts and diagnostic errors, and avoid unnecessary dependencies
 or unrelated refactoring. Separate configuration from logic where useful.
@@ -115,10 +175,12 @@ detailed logs and large datasets outside STATE.md and link to them.
 ### 7. Evaluate completion and repeat
 
 If a relevant requirement is FAIL, UNTESTED, or BLOCKED, select the next useful
-action. Work on independent gaps when one is blocked. If all required criteria
-have current PASS evidence, perform final validation of the integrated system
-on the final configuration. If it fails, record the failure and return to the
-gap loop. Completion requires:
+action allowed in the current phase. Work on independent gaps when one is
+blocked; before initial hardware integration, follow the hardware review gate
+once hardware-free work is exhausted. If all required criteria have current PASS
+evidence, perform final validation of the integrated system on the final
+configuration. If it fails,
+record the failure and return to the gap loop. Completion requires:
 
 - Required functionality and acceptance criteria demonstrated with relevant tests.
 - Critical interfaces validated and critical integration failures resolved.
@@ -126,11 +188,12 @@ gap loop. Completion requires:
 - Configuration captured and operation reproducible from written instructions.
 - Remaining limitations documented without concealing unmet requirements.
 
-Then complete outputs/REPORT.md, link final evidence, and mark STATE.md COMPLETE.
+Then complete outputs/REPORT.md, link final evidence, and mark STATE.md VALIDATED.
 Documented non-critical limitations are acceptable when required criteria pass.
-If every useful action requires unavailable hardware, information, access, or a
-controlled action, mark the session BLOCKED, fill the report as a blocked handoff,
-and state the exact resumption condition. BLOCKED is never validated completion.
+Outside the planned review gate, if every useful action requires unavailable
+hardware, information, access, or a controlled action, mark the session BLOCKED,
+fill the report as a blocked handoff, and state the exact resumption condition.
+BLOCKED and AWAITING_HUMAN_REVIEW are never validated completion.
 Files preserve continuity; they do not keep an agent running after its session.
 
 ## Engineering boundaries, hardware, and calibration
@@ -157,7 +220,8 @@ calibration and requirement status until rechecked.
 ## Physical action and human intervention
 
 Ability to execute is not authority to execute. Apply these boundaries to all
-actions, including scripts, tests, initialization, recovery, and cleanup:
+actions, including scripts, tests, initialization, recovery, and cleanup. Real
+device interactions also require passage through the hardware review gate:
 
 | Action | Operating rule |
 | --- | --- |
@@ -174,13 +238,15 @@ concrete procedure, expected effect, limits, and recovery plan before requesting
 approval. Perform useful independent work while it is pending; elapsed time is
 not approval. Never energize or move hardware as an incidental software test.
 
-Request intervention only for a genuine dependency: physical access, a missing
-private fact, credentials/authority, a purchase, a potentially damaging or
-irreversible action, a major preference tradeoff, or an objective change. Put a
-single precise request in STATE.md's Human action required section with:
+Request intervention at the hardware review gate or for a genuine dependency:
+physical access, a missing private fact, credentials/authority, a purchase, a
+potentially damaging or irreversible action, a major preference tradeoff, or an
+objective change. A physical dependency warrants intervention only after all
+meaningful hardware-independent work relevant to the objective is complete.
+Put a single precise request in STATE.md's Human action required section with:
 
 1. What is known, with evidence.
-2. What is blocked and why available autonomous work cannot resolve it.
+2. The review boundary or blocker and why no useful autonomous work remains.
 3. The exact action/information/approval needed and applicable limits.
 4. The result to return, including units or confirmation of the resulting state.
 5. The next action after the result arrives.

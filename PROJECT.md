@@ -19,13 +19,18 @@ the agent can assign them in STATE.md without changing your wording here. -->
 <!-- Relevant compatibility, operating ranges, timing, environment, budget,
 materials, or platform limits. For physical systems: known safety limits,
 prohibited actions, and which device operations are already authorized, by
-whom, under what conditions. Do not put credentials here. -->
+whom, under what conditions. These limits inform hardware-free development;
+explicit approval of the hardware-ready candidate precedes integration.
+Do not put credentials here. -->
 
 ## Available system
 
 <!-- Existing hardware/devices, physical connections, software/firmware, code,
 manuals/URLs, datasets, schematics, interfaces, and test equipment. Paths and
 references are sufficient; do not copy public manuals into this file. -->
+
+<!-- Hardware need not be accessible at initialization. The agent completes
+meaningful hardware-independent work before requesting physical access. -->
 
 ## Project-specific context (optional)
 

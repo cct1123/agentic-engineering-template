@@ -4,12 +4,15 @@ Status: NOT_STARTED — this is an unfilled report template, not a validated res
 
 Agent-maintained deliverable. Replace prompts with concise supported findings;
 omit inapplicable sections. For a blocked handoff, retain unmet criteria and exact
-resumption conditions. Link evidence rather than narrating the work history.
+resumption conditions. For AWAITING_HUMAN_REVIEW, present the hardware-ready
+candidate and approval request without claiming validated completion. Link
+evidence rather than narrating the work history.
 
 ## Objective and outcome
 
-<!-- Objective, achieved scope, and whether the system is COMPLETE or BLOCKED.
-Distinguish implemented behavior from what was actually demonstrated. -->
+<!-- Objective, achieved scope, and current status: candidate awaiting review,
+hardware validation in progress, VALIDATED, or BLOCKED as applicable. Distinguish
+implemented behavior from what was actually demonstrated. -->
 
 ## Resulting system
 
@@ -24,6 +27,17 @@ hardware/software/firmware roles, interfaces, and integration boundaries. -->
 <!-- Include all required criteria, including FAIL, UNTESTED, or BLOCKED ones.
 Link E records and the final integrated acceptance run. Distinguish simulation,
 software testing, human reports, and direct physical measurement. -->
+
+## Hardware integration review (when applicable)
+
+<!-- Before AWAITING_HUMAN_REVIEW: identify candidate revision/configuration and
+link the final software-side review and automated test results. Use the sections
+above for architecture and implementation status. State known limitations,
+unverified hardware assumptions, expected behavior, exact first device
+interactions with limits, physical validation tests and expected results, and
+safe shutdown/rollback. Request explicit integration approval for this candidate
+and scope. After approval, link its record; retain outstanding physical tests
+until demonstrated. Hardware-ready is not fully validated or production-ready. -->
 
 ## Working configuration and calibration
 

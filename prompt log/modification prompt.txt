@@ -1,0 +1,155 @@
+Update the reusable `agentic-engineering-template` based on the following workflow correction.
+
+Do not modify or steer any currently active engineering run. Apply this only to the reusable template so future projects follow the improved process.
+
+## Problem Observed
+
+The current workflow can request physical hardware access too early.
+
+For hardware/software engineering projects, lack of hardware should not become a blocker while substantial hardware-independent engineering work remains.
+
+The default process should first maximize autonomous development, testing, simulation, and preparation without hardware.
+
+## Required Workflow Change
+
+For projects involving physical hardware, use this default staged workflow:
+
+**Requirements
+→ Hardware-Free Development
+→ Simulation / Mocks / Automated Testing
+→ Hardware-Ready Candidate
+→ Human Review Gate
+→ Hardware Integration
+→ Physical Validation
+→ Debug / Regression
+→ Validated Release**
+
+## Phase 1 — Hardware-Free Development
+
+Before requesting physical hardware access, the agent should complete all meaningful work that can reasonably be done without the device.
+
+This may include:
+
+* researching official documentation and APIs;
+* selecting the implementation architecture;
+* implementing drivers and controller abstractions;
+* implementing application logic and GUI;
+* creating mocks, simulators, or fake backends where useful;
+* writing unit and integration tests;
+* testing normal and error paths;
+* testing startup/shutdown behavior;
+* validating configuration and dependency management;
+* static analysis, type checking, linting, and software-only validation where appropriate;
+* documenting assumptions that remain hardware-dependent;
+* preparing the exact hardware-validation procedure.
+
+The absence of hardware is **not a blocker** while useful hardware-independent engineering remains.
+
+## Hardware-Ready Gate
+
+When hardware-free engineering is exhausted, transition to:
+
+`HARDWARE_READY`
+
+The agent should then perform a final software-side review and prepare:
+
+* current architecture;
+* implementation status;
+* automated test results;
+* known limitations;
+* unverified hardware assumptions;
+* expected hardware behavior;
+* exact first device interactions;
+* hardware-validation tests;
+* safe shutdown / rollback behavior.
+
+Then transition to:
+
+`AWAITING_HUMAN_REVIEW`
+
+and stop.
+
+## Human Review Gate
+
+Physical hardware interaction should not begin automatically.
+
+The human reviews the hardware-ready candidate and explicitly authorizes hardware integration.
+
+This review is a deliberate engineering phase boundary, not an error or blocker.
+
+## Phase 2 — Hardware Integration
+
+After approval:
+
+1. identify the actual device and configuration;
+2. confirm compatibility with assumptions made during development;
+3. begin with the least consequential useful interaction;
+4. prefer read-only communication first where possible;
+5. validate initialization and state reporting;
+6. perform controlled actuation;
+7. compare physical behavior with expected behavior;
+8. diagnose discrepancies;
+9. modify implementation where needed;
+10. rerun software regression tests;
+11. perform physical acceptance tests.
+
+## Completion Semantics
+
+Use clear project states such as:
+
+`SOFTWARE_DEVELOPMENT`
+→ `HARDWARE_READY`
+→ `AWAITING_HUMAN_REVIEW`
+→ `HARDWARE_VALIDATION`
+→ `VALIDATED`
+
+Do not describe a project as fully validated or production-ready before required physical acceptance tests pass.
+
+The end of Phase 1 may instead be described as:
+
+* hardware-ready;
+* integration-ready;
+* software-complete pending hardware validation;
+* release candidate pending physical validation.
+
+## General Principle
+
+The autonomous engineering agent should defer human intervention until it reaches the boundary of what can productively be accomplished autonomously.
+
+A physical dependency should trigger human intervention only when:
+
+**all meaningful hardware-independent engineering relevant to the current objective has already been completed.**
+
+## Template Changes
+
+Review and update the relevant reusable template files, especially:
+
+* `AGENTS.md`
+* `STATE.md`
+* `ARCHITECTURE.md`
+* `README.md`
+
+and any initialization/project guidance affected by this behavior.
+
+Keep the change minimal and consistent with the existing philosophy of the template.
+
+Do not add unnecessary process or directories.
+
+Update the Mermaid architecture so the normal hardware project path visibly includes:
+
+**Autonomous Hardware-Free Engineering
+→ Hardware-Ready Candidate
+→ Human Review Gate
+→ Hardware Validation
+→ Validated Completion**
+
+while preserving the existing core engineering loop:
+
+**Inspect → Gap → Design → Implement → Test → Diagnose → Update State → Repeat**
+
+After making the changes, summarize:
+
+1. what changed;
+2. which files changed;
+3. how future hardware projects will behave differently;
+4. whether any existing instructions became redundant and were removed.

@@ -1,8 +1,10 @@
 # Template self-review
 
-Reviewed 2026-09-09 against the supplied `starter prompt.txt`.
+Reviewed 2026-09-09 against the supplied creation request, then updated for the
+hardware-free development and explicit candidate review workflow. Source prompts
+are retained in `prompt log/`.
 
-Scope: seven tabletop workflow simulations and repository structure checks. The
+Scope: tabletop workflow simulations and repository structure checks. The
 scenarios below use fictional devices, observations, and IDs to exercise the
 instructions. They are not real measurements, executed driver tests, or evidence
 that any particular agent will follow the instructions. Production PROJECT.md,
@@ -38,12 +40,22 @@ adapter and driver, and expose a normalized `read_temperature()` interface to th
 logger. Plan tests for valid data, malformed frames, timeout, and reconnect. Record
 the supplied fictional outcomes as simulation-scoped E records in the scenario;
 software criteria can pass within that scope. Real-device behavior remains
-BLOCKED, and electrical compatibility remains unvalidated. The read-and-clear
-command is assessed for its state-changing effect before use.
+UNTESTED (or BLOCKED for an identified unavailable device), and electrical
+compatibility remains unvalidated. Overall status stays SOFTWARE_DEVELOPMENT
+while useful work remains: logger/application behavior, normal/error paths,
+startup/shutdown, integration, configuration/dependencies, and relevant static
+checks. Prepare exact physical tests and document assumptions. Only after this
+work is exhausted, checkpoint HARDWARE_READY and review the candidate. Package
+architecture, implementation, test evidence, limitations, assumptions, expected
+behavior, first interactions, physical tests and shutdown/rollback in REPORT.md.
+If review finds software gaps, resolve them first. Otherwise checkpoint
+AWAITING_HUMAN_REVIEW, request explicit candidate integration approval and stop.
+The read-and-clear command is assessed for its state-changing effect before use.
 
 **Review result:** Interface boundaries, implementation, evidence, and current
 configuration have clear homes. Passing a fake transport cannot validate the
 physical instrument. Available code work continues while device access is blocked.
+The review gate is neither a project BLOCKED status nor physical validation.
 
 ## 3. Integration failure
 
@@ -65,9 +77,12 @@ The evidence record format retains the failed result after the fix.
 
 ## 4. Hardware intervention
 
-**Input:** All useful software work is done. Continuity at a labeled connector
-must be checked physically using an existing approved isolation and test procedure.
-The agent cannot perform this measurement remotely.
+**Input:** All useful software work is done and the reviewed candidate has explicit
+integration approval. Actual device/configuration identity and compatibility are
+checked, then the least consequential useful interactions validate initialization
+and state reporting before approved actuation. A discrepancy requires continuity
+at a labeled connector to be checked using an approved isolation/test procedure.
+The agent cannot perform this measurement remotely; no independent work remains.
 
 **Walkthrough:** Save the supported diagnosis and affected requirement as BLOCKED.
 Prepare this precise request, referring to the fictional project's known procedure:
@@ -87,6 +102,8 @@ or obtaining those missing facts would precede the measurement request.
 an exact action, expected returned data, and resumption. No invented voltage or
 safe operating limit is used. Existing scoped authorization is retained; a pending
 request or elapsed time does not authorize further actuation.
+Before candidate approval, the agent would instead stop at AWAITING_HUMAN_REVIEW
+with the prepared procedure; general device permissions alone would not permit it.
 
 ## 5. Agent handoff
 
@@ -105,6 +122,12 @@ working and failing behavior, current configuration, evidence pointer, and next
 action. Inspect only E014 and relevant artifacts. Reconcile any uncommitted change
 and pending operation before repeating tests; a record from revision A cannot
 automatically validate an incompatible revision B.
+
+**Review-gate branch:** A successor finding AWAITING_HUMAN_REVIEW and no candidate
+approval remains stopped without probing an attached device. If explicit approval
+for the candidate and current scope is recorded, resume HARDWARE_VALIDATION without
+asking again, then check actual device state. If interrupted at HARDWARE_READY,
+finish the software-side review; this state alone grants no device access.
 
 **Review result:** The checkpoint fields support continuation without reconstructing
 history. This is a tabletop successor exercise, not a second-agent execution test.
@@ -125,6 +148,9 @@ Keep E020 and the earlier passing record as historical evidence.
 new passing evidence have distinct meanings. Changed calibration assumptions or
 criteria follow the same invalidation rule. The diagram's failure path returns
 to diagnosis and gap selection rather than proceeding to completion.
+During hardware validation, fixes trigger relevant software regressions and
+affected physical acceptance tests. Changes outside the approved scope or reviewed
+safety assumptions return to candidate review before affected device interactions.
 
 ## 7. Completion
 
@@ -137,35 +163,64 @@ and acceptance procedure. On the fictional PASS branch, capture the source
 fingerprint, dependency/firmware versions, hardware connections, parameters, and
 calibration validity. Fill REPORT.md with the resulting architecture, all criteria
 and evidence, prerequisites, operating and shutdown procedures, acceptance commands,
-recovery instructions, limits, and decisions. Mark STATE.md COMPLETE only after
+recovery instructions, limits, and decisions. Mark STATE.md VALIDATED only after
 the report and configuration are ready.
 
 **Adverse branches:** If final validation fails, append the failure and return to
-the gap loop. If the real device is unavailable, produce a BLOCKED report with
-the missing physical test and exact resumption condition. A simulation PASS or
+the gap loop. If the real device is unavailable after candidate approval and no
+independent work remains, produce a BLOCKED report with the missing physical test
+and exact resumption condition. Before approval, an otherwise hardware-ready
+candidate instead awaits review. A simulation PASS or
 an unmet required criterion cannot be renamed a non-critical limitation.
 
 **Review result:** The final report distinguishes demonstrated behavior from
 implementation, and both failure branches preserve truthful project status.
 
+## 8. Available hardware and software-only projects
+
+**Input:** In one branch, hardware is already connected and general device-read
+permission exists at startup. In another, the objective is a software-only API.
+
+**Walkthrough:** The hardware branch still completes hardware-free engineering and
+candidate review before any real-device discovery, initialization, read, test or
+cleanup; a connected device does not bypass explicit candidate approval. The API
+branch uses SOFTWARE_DEVELOPMENT, software acceptance and final validation, then
+VALIDATED. It does not create a hardware review request.
+
+**Review result:** The gate controls first physical interaction without imposing
+unnecessary human review on projects with no hardware. Hardware-free completion
+cannot be reported as fully validated or production-ready for hardware projects.
+
 ## Structural verification
 
-Result: **PASS — 65 structural assertions**, including four repository links and
-four links in an isolated temporary copy of the seven core files. Checks ran with
-local Python standard-library tools on 2026-09-09; the temporary copy was removed
-after verification. All seven tabletop scenarios have a supported continuation,
-completion, or explicit blocked-handoff path in the operating instructions.
+The initial template passed 65 structural assertions on 2026-09-09. That result
+predates the workflow correction and does not validate the revised files.
+
+Current result (2026-09-09): **PASS — 138 structural checks**, using local Python
+3.9.12 standard-library checks on the revised template. Four local Markdown links
+resolve; their targets are all in the seven core files. Both Mermaid graphs have
+defined nodes and the expected transitions. Graph reachability confirms that
+hardware validation and completion cannot be reached in the phase diagram while
+omitting the human review gate. The eight tabletop scenarios above were reviewed
+against AGENTS.md and the checkpoint/report guidance. `git diff --check` also
+passed for all seven edited documentation files.
+
+Core file fingerprints at verification (SHA-256 prefixes of UTF-8 text normalized
+to LF): README.md `947386d895b8`; PROJECT.md `754dacacf162`; AGENTS.md `800197bfb673`;
+ARCHITECTURE.md `52b9d65e211f`; STATE.md `2f9ec90cadd7`;
+records/RECORDS.md `85855f7bf278`; outputs/REPORT.md `afae2a3a8b7e`.
 
 Repository checks cover:
 
 - All seven core files exist and are nonempty.
 - Relative Markdown links and heading anchors resolve.
-- A clean temporary copy of only the seven core files retains valid links.
+- Relative links resolve with only the seven core files available.
 - Fenced blocks and Markdown tables have consistent delimiters and column counts.
 - STATE.md and REPORT.md remain NOT_STARTED, with empty requirement tables;
-  the human-action section and actual engineering records are empty.
-- The Mermaid graph contains explicit repeat, final-validation failure,
-  controlled-action return, independent-work, and blocked-handoff paths.
+  there is no active human-action request and actual engineering records are empty.
+- The Mermaid graphs contain the hardware candidate/review/validation path, the
+  core repeat loop, final-validation failure, human-result return, independent
+  work, and blocked-handoff paths.
 
 These checks validate the template's structure and initial state. The diagram
 uses GitHub Mermaid syntax; graph-path checks are not a browser rendering test.
@@ -181,3 +236,12 @@ backlog. There is no scheduler, database, mandatory agent hierarchy, configurati
 schema, or speculative directory tree. Project-specific tests and engineering
 directories are created when needed. These review notes are optional maintainer
 material and are deliberately outside the project's evidence ledger.
+
+The workflow correction keeps that structure. Hardware review uses STATE.md and
+REPORT.md rather than a new gate document. Replaced ACTIVE/COMPLETE status guidance
+with the explicit phase states and VALIDATED; narrowed the old blanket blocked
+handoff rule to exclude planned candidate review. Retained the adaptive engineering
+loop, evidence rules, scoped authorization, calibration and physical-action limits.
+Only this reusable repository is in scope; no existing project or active engineering
+run was inspected or changed. The original starter prompt remains historical source
+material, not the current launch instructions.
