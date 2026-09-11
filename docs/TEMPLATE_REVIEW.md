@@ -279,3 +279,40 @@ STATE.md; the architecture shows these feeding the existing loop. No project
 scaffolding was added. Maintenance evidence stays here, leaving project state
 and records uninitialized for reuse. The supplied onboarding request is retained
 in `prompt log/` alongside the earlier historical requests.
+
+## Human-input provenance review — 2026-09-10
+
+The human-steering request adds one core file, records/HUMAN_INPUTS.md, bringing
+the core set to eight files. H entries separate timestamp, type, source, and human
+wording from agent interpretation/change and affected requirements/state. Current
+intent stays in PROJECT.md, the checkpoint in STATE.md, and E/D evidence and
+engineering decisions in RECORDS.md. Earlier verification above predates this change.
+
+Tabletop review (instruction-level, not an agent execution test):
+
+| Case | Expected handling / review result |
+| --- | --- |
+| Requirement, scope, constraint, or priority change | H entry retains the source; affected project/state sections link back and validation is reassessed before dependent work. |
+| Short approval or hardware permission | Retain the referenced candidate/request and exact scope/limits; interpretation cannot add authority or bypass review. |
+| Override, correction, revocation, or later clarification | Append and link the earlier entry; update the current checkpoint without rewriting original human wording. Agent reinterpretation stays in D records. |
+| Interruption after an H entry but before checkpoint update | Compare H entries with STATE.md's last applied input; reconcile later entries before dependent work. Existing logs without that checkpoint are reconciled once. |
+| Routine conversation, reported measurement, or agent design choice | Omit routine chat; measurements and design decisions stay E/D records, linked to H inputs only when relevant. |
+
+Only relevant excerpts are retained; summaries and unavailable source details are
+labeled. The new log remains unfilled, as do the project definition, checkpoint,
+evidence ledger, and report, so template-maintenance history is not inherited by
+new engineering projects.
+
+Critical review added the last-applied H checkpoint to cover interrupted state
+updates and kept later agent reinterpretations out of the human-input log. Pruning
+removed repeated field instructions from AGENTS.md and shortened HUMAN_INPUTS.md.
+
+Final verification after critical review: **PASS — 75 structural checks** with a
+one-off Python standard-library check of the eight core files and this review
+document. All 16 local Markdown
+links/anchors resolve; fences and tables are consistent; project requirements,
+E/D records, and H inputs remain uninitialized; the last applied input is none.
+Both canonical prompts, both Mermaid diagrams, and AGENTS.md's hardware phase
+rules are unchanged from
+`a3eaeea`. `git diff --check` passes. This verifies document structure and the
+preserved guidance, not runtime enforcement of human-input recording.

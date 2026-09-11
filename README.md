@@ -16,7 +16,7 @@ schedule work, or grant device access. A single capable agent is sufficient.
    what you know; the agent helps clarify what matters. You do not need to design
    the implementation or write a detailed engineering plan.
 2. **Let the agent configure the engineering workspace.** Use this repository as
-   a template, clone it, or copy the seven core files below into your project.
+   a template, clone it, or copy the core files below into your project.
    Give the agent access to the project directory and relevant code, manuals,
    schematics, data, or references, then send the setup prompt in the discussion.
    Keep credentials outside tracked files.
@@ -71,7 +71,8 @@ project/
 ├── ARCHITECTURE.md       Engineering loop and workspace boundaries
 ├── STATE.md              Agent's concise current checkpoint
 ├── records/
-│   └── RECORDS.md         Evidence E001… and decisions D001…
+│   ├── RECORDS.md         Evidence E001… and decisions D001…
+│   └── HUMAN_INPUTS.md    Consequential human inputs H001… and their sources
 └── outputs/
     └── REPORT.md          Candidate review, validated result, or blocked handoff
 ```
@@ -80,6 +81,11 @@ Humans supply and review intent; direct edits to PROJECT.md are also welcome.
 Agents maintain the checkpoint, records, report, and engineering artifacts.
 Record the actual system architecture in STATE.md and the report. Keep existing
 project conventions and add directories or design documents only when useful.
+
+Agents preserve consequential steering in [HUMAN_INPUTS.md](records/HUMAN_INPUTS.md):
+human wording and source, separate from interpretation, with links to affected
+intent, state, or evidence. Routine chat and transcripts are omitted. STATE.md
+tracks the last applied input so successors can find newly recorded steering.
 
 The repository also has a `.gitignore`, historical requests in `prompt log/`, and
 maintainer notes in `docs/TEMPLATE_REVIEW.md`. These are optional extras; the two

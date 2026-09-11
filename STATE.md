@@ -3,10 +3,13 @@
 Agent-maintained current checkpoint, not a chronological log. Replace guidance
 with concise facts and links during project setup and as work proceeds. Read
 PROJECT.md for human intent; use records/RECORDS.md for evidence and decisions.
+Link relevant [H records](records/HUMAN_INPUTS.md) for human steering and authority.
 
 ## Status
 
 NOT_STARTED — project objective has not yet been initialized.
+
+Last applied human input: none.
 
 <!-- Hardware path: SOFTWARE_DEVELOPMENT -> HARDWARE_READY ->
 AWAITING_HUMAN_REVIEW -> HARDWARE_VALIDATION -> VALIDATED.
@@ -81,7 +84,7 @@ review belongs below, not here.
 its evidence; request explicit hardware integration approval with scope/limits.
 Record the expected reply and next action. Do not request physical access while
 meaningful hardware-independent work remains. Clear resolved requests and retain
-approval in Current configuration with a durable record reference. -->
+approval in Current configuration with its H record reference. -->
 
 ## Completion status
 

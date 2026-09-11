@@ -4,6 +4,7 @@ Human intent, captured by the agent from the project discussion during setup and
 reviewed by the human. Direct human edits are also welcome; plain bullets are
 enough. Label assumptions and unknowns rather than inventing facts. No human-written
 implementation plan is required. See the [setup prompt](README.md#project-setup-prompt).
+Link consequential human intent or changes to their [H records](records/HUMAN_INPUTS.md).
 
 ## Engineering objective
 

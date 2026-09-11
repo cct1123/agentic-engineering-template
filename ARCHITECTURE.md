@@ -99,6 +99,8 @@ gate. Neither is a success claim or a reason to skip available software work.
 
 Human intent lives in PROJECT.md. STATE.md points to current artifacts, test
 methods, and evidence; records preserve reproducible observations and decisions.
+Linked H entries in records/HUMAN_INPUTS.md preserve consequential human wording
+and its source separately from the agent's interpretation.
 The report describes the engineered system, configuration, demonstrated results,
 and operation. Optional specialists return bounded artifacts and evidence to the
 coordinator, which maintains the single canonical state.

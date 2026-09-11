@@ -4,6 +4,10 @@ No project records yet. Append evidence and consequential decisions below as wor
 occurs. These are durable conclusions and their basis, not a transcript or private
 reasoning. STATE.md links directly to the records needed for the current checkpoint.
 
+Human steering and approvals belong in [HUMAN_INPUTS.md](HUMAN_INPUTS.md). Link H
+records as sources for relevant E/D records instead of duplicating human wording;
+human-reported measurements still belong here as E records.
+
 Use monotonically increasing IDs: `E001`, `E002`, … for evidence; `D001`, `D002`, …
 for decisions. Never reuse IDs or overwrite an earlier result to make it pass.
 Append a new record for a rerun, correction, or superseding decision and link back.
@@ -54,7 +58,7 @@ Routine edits do not need decision entries.
 
 Date: <timestamp with timezone>
 Decision: <chosen design, configuration, or diagnostic conclusion>
-Basis: <E IDs, source references, or explicit assumptions; affected REQ IDs>
+Basis: <E/H IDs, source references, or explicit assumptions; affected REQ IDs>
 Consequence: <engineering tradeoff, affected interfaces/artifacts, validation needed>
 Reconsider if: <new evidence or changed conditions that would invalidate the choice>
 Supersedes: <earlier D ID if applicable>
