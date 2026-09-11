@@ -1,8 +1,9 @@
 # Project definition
 
-Human-authored intent. Fill in the objective; add other details where known or
-important. Plain bullets are enough. Leave optional sections blank rather than
-inventing information or writing an implementation plan.
+Human intent, captured by the agent from the project discussion during setup and
+reviewed by the human. Direct human edits are also welcome; plain bullets are
+enough. Label assumptions and unknowns rather than inventing facts. No human-written
+implementation plan is required. See the [setup prompt](README.md#project-setup-prompt).
 
 ## Engineering objective
 
@@ -31,6 +32,12 @@ references are sufficient; do not copy public manuals into this file. -->
 
 <!-- Hardware need not be accessible at initialization. The agent completes
 meaningful hardware-independent work before requesting physical access. -->
+
+## Known unknowns
+
+<!-- Important unresolved facts, assumptions, or decisions. Distinguish what the
+agent can investigate from what needs a human answer. Track investigations and
+any required human action in STATE.md. -->
 
 ## Project-specific context (optional)
 

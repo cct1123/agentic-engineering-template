@@ -1,8 +1,10 @@
 # Template self-review
 
 Reviewed 2026-09-09 against the supplied creation request, then updated for the
-hardware-free development and explicit candidate review workflow. Source prompts
-are retained in `prompt log/`.
+hardware-free development and explicit candidate review workflow. Updated
+2026-09-10 for discussion → project setup → persistent engineering loop. Earlier
+source prompts are retained as historical material in `prompt log/`; README.md
+contains the two canonical prompts.
 
 Scope: tabletop workflow simulations and repository structure checks. The
 scenarios below use fictional devices, observations, and IDs to exercise the
@@ -13,21 +15,25 @@ repository can be reused without stale project claims.
 
 ## 1. Minimal initialization
 
-**Input:** One paragraph asks for a CSV temperature logger. Bullets require at
-least 10 samples/s, explicit units, and bounded recovery from a dropped connection.
-The human lists a USB sensor, existing code, and a device manual. Known operating
-limits are supplied; no implementation plan is supplied.
+**Input:** In a natural discussion, the human asks for a CSV temperature logger
+with at least 10 samples/s, explicit units, and bounded recovery from a dropped
+connection. They describe a USB sensor, existing code, a device manual, hardware
+access, and known operating limits. No implementation design or plan is supplied.
 
-**Walkthrough:** Read the three startup files and inspect the existing code/manual.
-Register REQ-001 through REQ-003 in STATE.md with source criteria and proposed
-TEST-001 through TEST-003. Mark them UNTESTED. Select protocol framing uncertainty
-as the first gap because acquisition and recovery depend on it. Inspect framing
-and write a software-only transport test without asking the human to plan work.
+**Walkthrough:** Apply the README setup prompt: inspect the template and supplied
+resources, capture agreed intent and limits in PROJECT.md, and note unresolved
+recovery timing as an unknown if the discussion gives no bound. Register REQ-001
+through REQ-003 and validation methods in STATE.md as UNTESTED. Keep existing code
+and create no speculative directories. If the recovery bound materially affects
+acceptance, ask for that bound while preparing independent work. The reusable
+loop prompt then selects protocol framing uncertainty as the first gap and drives
+a software-only transport test, recording its actual result when executed.
 
-**Review result:** The startup and gap-selection instructions support immediate
-progress from one edited file. The human need not supply public engineering
-background. With only an objective, the agent can mark derived acceptance criteria
-in STATE.md; consequential ambiguity is the point for a precise question.
+**Review result:** The two prompts connect discussion to a usable checkpoint and
+then autonomous engineering. The human can review the captured intent without
+writing the project file or planning implementation. Low-risk choices stay with
+the agent; significant ambiguities remain visible. With only an objective, derived
+criteria belong in STATE.md and are labeled as derived, not agreed human facts.
 
 ## 2. Device driver
 
@@ -107,8 +113,9 @@ with the prepared procedure; general device permissions alone would not permit i
 
 ## 5. Agent handoff
 
-**Input:** Discard the scenario's conversational history. The successor has only
-PROJECT.md, STATE.md, AGENTS.md, and the workspace those files reference.
+**Input:** After interruption, context loss, or agent replacement, discard the
+scenario's conversational history and send the same persistent loop prompt.
+The successor has PROJECT.md, STATE.md, AGENTS.md, and their referenced resources.
 
 **Checkpoint exercised:** STATE.md identifies the CSV logger objective and driver
 → normalized interface → logger architecture; links driver and logger entry points;
@@ -130,7 +137,8 @@ asking again, then check actual device state. If interrupted at HARDWARE_READY,
 finish the software-side review; this state alone grants no device access.
 
 **Review result:** The checkpoint fields support continuation without reconstructing
-history. This is a tabletop successor exercise, not a second-agent execution test.
+history or repeating setup. This is a tabletop successor exercise, not a
+second-agent execution test.
 
 ## 6. Regression
 
@@ -196,7 +204,7 @@ cannot be reported as fully validated or production-ready for hardware projects.
 The initial template passed 65 structural assertions on 2026-09-09. That result
 predates the workflow correction and does not validate the revised files.
 
-Current result (2026-09-09): **PASS — 138 structural checks**, using local Python
+Previous result (2026-09-09): **PASS — 138 structural checks**, using local Python
 3.9.12 standard-library checks on the revised template. Four local Markdown links
 resolve; their targets are all in the seven core files. Both Mermaid graphs have
 defined nodes and the expected transitions. Graph reachability confirms that
@@ -204,6 +212,9 @@ hardware validation and completion cannot be reached in the phase diagram while
 omitting the human review gate. The eight tabletop scenarios above were reviewed
 against AGENTS.md and the checkpoint/report guidance. `git diff --check` also
 passed for all seven edited documentation files.
+
+This result predates the two-prompt onboarding change; its fingerprints describe
+the earlier revision, not validation of the current files.
 
 Core file fingerprints at verification (SHA-256 prefixes of UTF-8 text normalized
 to LF): README.md `947386d895b8`; PROJECT.md `754dacacf162`; AGENTS.md `800197bfb673`;
@@ -226,10 +237,26 @@ These checks validate the template's structure and initial state. The diagram
 uses GitHub Mermaid syntax; graph-path checks are not a browser rendering test.
 The scenario outcomes above are instruction-level review, not runtime enforcement.
 
+### Onboarding verification — 2026-09-10
+
+**PASS — 56 structural checks** using a one-off Python standard-library check of
+the seven core files and this review document: all 10 local Markdown links and
+their anchors resolve, core guidance links require no optional files, fences and
+tables are consistent, and the README has exactly two canonical prompt headings.
+The objective, project records, and human-action request remain uninitialized.
+The hardware phase graph and AGENTS.md from "Hardware project phases" onward
+are unchanged from the pre-edit revision. `git diff --check` passes.
+
+Scenarios 1 and 5 were reviewed against the revised onboarding instructions;
+scenarios 2, 4, and 8 retain the explicit hardware gate and software-only path.
+These are documentation checks and tabletop reviews, not physical tests or agent
+execution trials. Review and pruning shortened repeated guidance while keeping
+both prompts and the hardware rules intact; the checks were rerun before commit.
+
 ## Simplification pass
 
-Kept seven core files. One human input file supplies intent; one current checkpoint
-holds requirement status and the short plan. Combined gaps with failures and
+Kept seven core files. One project definition captures human intent; one current
+checkpoint holds requirement status and the short plan. Combined gaps with failures and
 priority with next action in STATE.md. Kept evidence and decisions in one record
 file, with separate IDs. The final report is a result snapshot, not another live
 backlog. There is no scheduler, database, mandatory agent hierarchy, configuration
@@ -245,3 +272,10 @@ loop, evidence rules, scoped authorization, calibration and physical-action limi
 Only this reusable repository is in scope; no existing project or active engineering
 run was inspected or changed. The original starter prompt remains historical source
 material, not the current launch instructions.
+
+Onboarding keeps both canonical prompts in README.md and links from related
+guidance. Agent setup captures intent and unknowns in PROJECT.md and initializes
+STATE.md; the architecture shows these feeding the existing loop. No project
+scaffolding was added. Maintenance evidence stays here, leaving project state
+and records uninitialized for reuse. The supplied onboarding request is retained
+in `prompt log/` alongside the earlier historical requests.

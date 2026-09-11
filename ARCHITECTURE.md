@@ -1,5 +1,9 @@
 # Autonomous engineering architecture
 
+Discussion supplies intent; agent setup captures it in PROJECT.md and initializes
+STATE.md. The two prompts in [README.md](README.md#start-a-project) start this
+workflow and resume the engineering loop from repository state.
+
 The engineering coordinator is the active agent's role. It selects each action
 from the gap between requirements and observed reality within the current phase.
 The project workspace carries memory across agents. Hardware projects follow these
@@ -42,11 +46,14 @@ Update State → Repeat**, with evidence deciding the next action:
 
 ```mermaid
 flowchart TD
-    H[Human] --> P[PROJECT.md: objective, criteria, constraints]
+    H[Human] --> DS[Discuss objective, behavior, constraints and resources]
+    DS --> PS[Agent configures project workspace]
 
     subgraph W[Project workspace]
+        PS --> P[PROJECT.md: objective, criteria, constraints]
+        PS --> S[STATE.md: canonical checkpoint]
         P --> C[Engineering coordinator: inspect requirements and current state]
-        S[STATE.md: canonical checkpoint] --> C
+        S --> C
         E[Records and engineering artifacts] --> C
         C --> G[Identify highest-priority gap]
         G --> D[Choose action and design]

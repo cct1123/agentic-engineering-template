@@ -1,34 +1,65 @@
 # Autonomous engineering workspace
 
-A small, reusable workspace for an engineering agent to take a project from an
-objective to a validated result. It supports hardware, electronics, instrumentation,
-embedded firmware, device protocols, APIs, automation, acquisition, calibration,
-and integrated hardware/software systems.
-
-The files provide operating instructions and durable memory. Run them with a
-capable engineering agent that can inspect files and use your project's tools;
-the template itself does not run an agent, schedule work, or grant device access.
-A single agent can run the entire workflow.
+A small, reusable workspace for an AI agent to take software, hardware, or an
+integrated engineering project from an objective to a validated result. The files
+provide operating instructions and durable memory. Use an agent that can inspect
+files and use your project's tools; the template itself does not run an agent,
+schedule work, or grant device access. A single capable agent is sufficient.
 
 ## Start a project
 
-1. Use this repository as a template, clone it, or copy the seven core files below
-   into your project. Keep existing code and conventions.
-2. Edit [PROJECT.md](PROJECT.md). At minimum, supply an engineering objective.
-   Add observable acceptance criteria, constraints, available resources, and any
-   private facts the agent cannot discover. A paragraph and a few bullets usually
-   suffice; no implementation plan is required.
-3. Add or point to existing code, manuals, schematics, data, and hardware details.
-   Create `inputs/` only if useful. Keep credentials outside tracked files.
-4. Start your agent in the project directory with this prompt:
+**Discussion with agent → project setup → persistent engineering loop.**
 
-   > Read `PROJECT.md`, `AGENTS.md`, and `STATE.md`. Take ownership of the engineering objective and continue the engineering loop, updating durable state. For hardware projects, complete meaningful hardware-free work, prepare a hardware-ready candidate, then stop at `AWAITING_HUMAN_REVIEW` for explicit integration approval. Resume hardware work only within recorded candidate approval. Continue until validated or no useful independent work remains.
+1. **Talk to the agent about what you want to build.** Discuss the objective,
+   desired behavior, constraints, acceptance criteria, available resources,
+   hardware access, safety limits, and important unknowns naturally. Start with
+   what you know; the agent helps clarify what matters. You do not need to design
+   the implementation or write a detailed engineering plan.
+2. **Let the agent configure the engineering workspace.** Use this repository as
+   a template, clone it, or copy the seven core files below into your project.
+   Give the agent access to the project directory and relevant code, manuals,
+   schematics, data, or references, then send the setup prompt in the discussion.
+   Keep credentials outside tracked files.
+3. **Run the persistent engineering loop.** Review the captured intent in
+   [PROJECT.md](PROJECT.md), correct anything needed, then send the reusable loop
+   prompt. The agent chooses the implementation and maintains progress in files.
 
-Known hardware limits and the scope of authorized device operations belong in
-PROJECT.md's constraints. Leaving them unspecified does not grant physical
-control authority; the agent can still inspect, design, simulate, and write code.
-Hardware access is not required to start, and even available devices wait for
-explicit approval of the hardware-ready candidate before interaction.
+### PROJECT SETUP PROMPT
+
+```text
+Use our preceding discussion and this template to configure this repository for
+the engineering task. Read the existing files first. Translate the discussion
+into PROJECT.md: objective, desired behavior, observable requirements and
+acceptance criteria, constraints, resources, hardware access, permissions, safety
+limits, and known unknowns. Preserve human intent and distinguish assumptions
+from agreed facts; do not invent permissions or safety limits. Make reasonable
+low-risk decisions yourself; ask only about ambiguities that materially affect
+scope, acceptance, safety, or a major tradeoff. Adapt the template only where
+the project genuinely requires it, preserve existing work and the STATE.md /
+records / evidence workflow and hardware review gate, and avoid unnecessary
+scaffolding. Initialize STATE.md with requirements, validation methods, and the
+next useful action, leaving the repository ready for autonomous engineering.
+```
+
+### PERSISTENT ENGINEERING LOOP PROMPT
+
+```text
+Read PROJECT.md, AGENTS.md, STATE.md, and relevant project resources. Take
+ownership of the engineering objective. Identify and execute the most
+consequential useful next action; implement, test, diagnose, refine, and update
+durable state and evidence. Use specialists/subagents for bounded tasks when
+useful. Continue autonomously until validation is complete, an explicit review
+gate is reached, or no useful independent work remains because of a genuine
+human decision or external dependency. For hardware: complete hardware-free
+development and validation → prepare a hardware-ready candidate → save
+AWAITING_HUMAN_REVIEW and stop for explicit candidate approval → perform
+authorized physical integration and validation. On resume, honor the gate and
+retain recorded candidate approval within its scope.
+```
+
+Reuse the loop prompt after interruptions, context loss, or agent replacement.
+Project continuity comes from repository state, not chat history; setup is only
+needed to configure the project, not each time work resumes.
 
 ## Files and ownership
 
@@ -45,21 +76,14 @@ project/
     └── REPORT.md          Candidate review, validated result, or blocked handoff
 ```
 
-Humans normally edit only **PROJECT.md**, and provide relevant existing files.
-Agents maintain **STATE.md**, **records/RECORDS.md**, **outputs/REPORT.md**, and
-the engineering artifacts they create. README.md, AGENTS.md, and ARCHITECTURE.md
-are reusable operating guidance; adapt them only when the project needs it.
-Put the actual engineered system architecture in STATE.md and the report, with
-a separate design document only when its complexity warrants one.
+Humans supply and review intent; direct edits to PROJECT.md are also welcome.
+Agents maintain the checkpoint, records, report, and engineering artifacts.
+Record the actual system architecture in STATE.md and the report. Keep existing
+project conventions and add directories or design documents only when useful.
 
-Expand only as needed: `inputs/`, `hardware/`, `interfaces/`, `software/`,
-`firmware/`, `tests/`, `measurements/`, `analysis/`, or `docs/`. Existing project
-layouts take precedence over these example names.
-
-This template repository also includes a small `.gitignore`, historical source
-requests in `prompt log/`, and maintainer review notes in `docs/TEMPLATE_REVIEW.md`.
-The prompt log is reference material; use the launch prompt above and AGENTS.md
-for current operating guidance. These extras are not needed to operate a new project.
+The repository also has a `.gitignore`, historical requests in `prompt log/`, and
+maintainer notes in `docs/TEMPLATE_REVIEW.md`. These are optional extras; the two
+prompts above and AGENTS.md provide current operating guidance.
 
 ## How work proceeds
 
@@ -67,81 +91,45 @@ for current operating guidance. These extras are not needed to operate a new pro
 choose an action → design / implement → test / measure → diagnose / evaluate →
 update state → requirements satisfied? → repeat or validate completion.**
 
-The coordinator is a role the current agent performs. Optional specialists can
-work on bounded tasks; the coordinator integrates their results into one state.
-See the [architecture diagram](ARCHITECTURE.md).
+Evidence changes the plan. Each requirement links to a validation method, result,
+and evidence for the relevant configuration. The current agent coordinates any
+specialists and integrates their results into one checkpoint. See the
+[architecture diagram](ARCHITECTURE.md).
 
-Choose the action most likely to close the most consequential gap at reasonable
-cost and risk. Evidence changes the plan. Do not rebuild working components or
-keep polishing requirements that already pass without a concrete reason.
-**Implemented does not mean validated:** each important requirement links to a
-test, its result, and evidence for the relevant configuration.
-
-Hardware projects use this default path, with the engineering loop inside each
-phase:
-
-**Requirements → Hardware-free development → Simulation / mocks / automated
-testing → Hardware-ready candidate → Human review gate → Hardware integration →
-Physical validation → Debug / regression as needed → Validated release.**
-
-Complete all meaningful hardware-independent engineering before requesting
-physical access: relevant documentation, architecture, drivers and abstractions,
-application/GUI, useful mocks, automated normal/error and startup/shutdown tests,
-configuration/dependency checks, and preparation of physical validation procedures.
-Missing hardware cannot block the project while useful independent work remains.
-
-The corresponding states are `SOFTWARE_DEVELOPMENT` → `HARDWARE_READY` →
-`AWAITING_HUMAN_REVIEW` → `HARDWARE_VALIDATION` → `VALIDATED`. At HARDWARE_READY,
-perform a final software-side review and prepare the candidate report with test
-evidence, limitations, hardware assumptions, expected behavior, exact first device
-interactions, physical tests, and safe shutdown/rollback. Resolve software gaps
-found in review, then checkpoint AWAITING_HUMAN_REVIEW and stop for explicit human
-approval. This is a planned phase boundary, not an error or BLOCKED status.
-Software-only projects go directly from SOFTWARE_DEVELOPMENT to VALIDATED after
-required validation; they do not need a hardware gate.
+Hardware access is not required to start. Complete all meaningful hardware-free
+work, then review the candidate and prepare outputs/REPORT.md with evidence,
+limitations, assumptions, physical validation procedures, and shutdown/rollback.
+Resolve software gaps before saving `AWAITING_HUMAN_REVIEW`. Even connected devices
+wait for explicit candidate approval before any interaction; general device
+permissions do not bypass the gate. See the [hardware phase rules](AGENTS.md#hardware-project-phases).
+Software-only projects use `SOFTWARE_DEVELOPMENT` → `VALIDATED` after required
+validation, without a hardware gate.
 
 ## Inspect progress and resume
 
 Read STATE.md for requirement statuses (`PASS`, `FAIL`, `UNTESTED`, `BLOCKED`),
 current configuration, priority, next action, and any exact human action needed.
-Follow its evidence links for details; records preserve conclusions and methods,
-not a transcript or private reasoning.
+Follow its evidence links for details.
 
-After an interruption or agent replacement, use the same launch prompt. A fresh
-agent reads PROJECT.md, STATE.md, and AGENTS.md, then checks only the referenced
-artifacts and evidence it needs. It reconciles unfinished changes and stale
-validation before continuing. At AWAITING_HUMAN_REVIEW it remains stopped unless
-explicit candidate approval is recorded; a restart or general device permission
-does not bypass review. Applicable recorded approval is retained within its scope.
-Conversation history is not required. A stopped agent must be restarted by a human
-or an external runner; these files preserve progress between sessions.
+A fresh agent using the [persistent loop prompt](#persistent-engineering-loop-prompt)
+checks the checkpoint against actual artifacts and relevant evidence, reconciling
+unfinished operations and stale validation before continuing. A restart does not
+bypass AWAITING_HUMAN_REVIEW; applicable recorded approval is retained within its
+scope. A stopped agent must be restarted by a human or an external runner; these
+files preserve progress between sessions.
 
 ## Human actions and completion
 
-Analysis and reversible local work normally proceed autonomously. After candidate
-approval, identify the actual device/configuration, check development assumptions,
-and begin with the least consequential useful interaction, preferably read-only.
-Device reads must be authorized and low risk; a read may change state. Validate
-initialization and state reporting before controlled actuation. Compare physical
-behavior with expectations, diagnose discrepancies, and rerun software regressions
-and affected physical tests after fixes. Device writes and physical actuation require
-known limits, a suitable system state, and authority for the actual action;
-possessing an interface is not permission. Existing authorization remains valid
-within its scope. When a controlled action is needed, the agent prepares a
-reviewable procedure, requests the precise action or approval, and continues
-independent work. Physical dependencies warrant intervention only after meaningful
-hardware-independent work is exhausted. It records how to resume after the result
-arrives. Changes beyond the candidate's approved scope require renewed review
-before affected device interactions.
+The agent continues independent work until the review gate or a genuine human
+decision or external dependency prevents further progress. It records the exact
+request and resumption condition in STATE.md. Hardware limits and authorized
+operations belong in PROJECT.md; candidate approval covers only its recorded
+scope. See [AGENTS.md](AGENTS.md#physical-action-and-human-intervention) for the
+operating boundaries and when renewed review is needed.
 
-Completion requires demonstrated acceptance criteria, relevant passing tests,
-validated critical interfaces and integration, documented configuration,
-calibration where required, and reproducible operation. The agent performs final
-validation and fills outputs/REPORT.md with evidence, operating instructions,
-and limitations, then marks STATE.md **VALIDATED**. Required physical acceptance
-tests must pass before a hardware project is fully validated or production-ready;
-before then it may be hardware-ready or software-complete pending hardware
-validation. Non-critical limitations may remain if required criteria pass.
-Outside the planned review gate, an external dependency can end a session as
-**BLOCKED** only when no useful independent work remains, with a useful report
-and resumption instructions; it is never reported as validated completion.
+Completion requires current evidence for all required criteria, final integrated
+validation, calibration where required, and reproducible operation. The agent
+fills outputs/REPORT.md with evidence, operating instructions, and limitations,
+then marks STATE.md **VALIDATED**. Hardware projects also require passing physical
+acceptance tests. **AWAITING_HUMAN_REVIEW** is a planned gate; **BLOCKED** is a
+handoff when only external dependencies remain. Neither is validated completion.

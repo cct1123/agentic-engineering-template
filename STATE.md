@@ -1,8 +1,8 @@
 # Engineering state
 
 Agent-maintained current checkpoint, not a chronological log. Replace guidance
-with concise facts and links as work begins. Read PROJECT.md for human intent;
-use records/RECORDS.md for detailed evidence and decisions.
+with concise facts and links during project setup and as work proceeds. Read
+PROJECT.md for human intent; use records/RECORDS.md for evidence and decisions.
 
 ## Status
 

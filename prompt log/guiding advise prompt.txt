@@ -1,0 +1,56 @@
+Improve the agentic-engineering-template so it gives users a clear, minimal workflow for starting a new engineering project with an AI agent.
+
+The intended human workflow is:
+
+discussion with agent → project setup → persistent engineering loop
+
+Add guidance that a user should first discuss the engineering task naturally with the agent: objective, desired behavior, constraints, acceptance criteria, available resources, hardware access, safety limits, and important unknowns. The human should not be expected to design the implementation or manually write a detailed engineering plan.
+
+Then provide two canonical prompts.
+
+1. PROJECT SETUP PROMPT
+
+This prompt should tell the agent to use the preceding discussion and the template to configure the repository for that specific engineering task.
+
+It should:
+- translate the discussion into PROJECT.md
+- capture objective, observable requirements, acceptance criteria, constraints, resources, permissions, and known unknowns
+- adapt the template only where the project genuinely requires it
+- preserve the persistent STATE.md / records / evidence workflow
+- avoid unnecessary scaffolding
+- leave the repository ready for autonomous engineering
+- identify only genuinely important ambiguities that require human clarification
+
+The setup agent should make reasonable low-risk decisions itself rather than repeatedly asking the human.
+
+2. PERSISTENT ENGINEERING LOOP PROMPT
+
+Provide one short reusable prompt that starts or resumes engineering from the repository state.
+
+It should instruct the agent to:
+- read PROJECT.md, AGENTS.md, STATE.md, and relevant project resources
+- take ownership of the engineering objective
+- identify and execute the most consequential useful next action
+- implement, test, diagnose, refine, and update durable state
+- use specialist/subagents when useful
+- continue autonomously
+- stop only at a genuine human decision, explicit review gate, external dependency, or completed validation
+
+For hardware projects, explicitly preserve the workflow:
+
+hardware-free development and validation
+→ hardware-ready candidate
+→ AWAITING_HUMAN_REVIEW
+→ authorized physical integration and validation
+
+Make the documentation clear that the persistent-loop prompt can be reused after interruptions, context loss, or agent replacement because project continuity should come from repository state rather than chat history.
+
+Update the README and any relevant guidance files so a new user can understand the workflow quickly.
+
+Keep the guidance compact. Avoid turning the template into a prompting handbook. The core message should be:
+
+Talk to the agent about what you want to build.
+Let the agent configure the engineering workspace.
+Then use one reusable prompt to run the persistent engineering loop.
+
+Review the existing template before editing and integrate this guidance naturally rather than duplicating existing concepts.
