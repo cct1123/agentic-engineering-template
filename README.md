@@ -24,6 +24,22 @@ schedule work, or grant device access. A single capable agent is sufficient.
    [PROJECT.md](PROJECT.md), correct anything needed, then send the reusable loop
    prompt. The agent chooses the implementation and maintains progress in files.
 
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'fontSize': '18px'}}}%%
+flowchart TD
+    D[Discuss the objective] --> S[Setup prompt:<br/>capture intent]
+    S --> L[Loop prompt:<br/>autonomous engineering]
+    RS[Interrupted, or a new agent] --> L
+    L --> G{Hardware project?}
+    G -->|No| V[VALIDATED]
+    G -->|Yes| RG[Candidate review gate]
+    RG -->|Explicit approval| HV[Hardware validation]
+    HV --> V
+```
+
+Setup runs once per project. The loop prompt is reusable: every later session,
+including a fresh agent, re-enters at the same point using the saved files.
+
 ### PROJECT SETUP PROMPT
 
 ```text
@@ -87,9 +103,17 @@ human wording and source, separate from interpretation, with links to affected
 intent, state, or evidence. Routine chat and transcripts are omitted. STATE.md
 tracks the last applied input so successors can find newly recorded steering.
 
-The repository also has a `.gitignore`, historical requests in `prompt log/`, and
+The repository also has a `.gitignore`, historical requests in `prompt-log/`, and
 maintainer notes in `docs/TEMPLATE_REVIEW.md`. These are optional extras; the two
 prompts above and AGENTS.md provide current operating guidance.
+
+For Claude Code users, `CLAUDE.md` points at these same files and
+`.claude/commands/setup.md` and `.claude/commands/loop.md` expose the two prompts
+above as `/setup` and `/loop`. Maintainers can run
+`python3 tools/validate_template.py .` to check the template's structure and that
+STATE.md / outputs/REPORT.md remain uninitialized; the same check runs in CI
+(`.github/workflows/validate.yml`). See `CHANGELOG.md` for template history and
+`LICENSE` (MIT) for reuse terms.
 
 ## How work proceeds
 
@@ -116,6 +140,36 @@ validation, without a hardware gate.
 Read STATE.md for requirement statuses (`PASS`, `FAIL`, `UNTESTED`, `BLOCKED`),
 current configuration, priority, next action, and any exact human action needed.
 Follow its evidence links for details.
+
+STATE.md's Loop continuity section is what makes a long-running project safe to
+interrupt: it names the current checkpoint owner, any in-flight action whose
+outcome is unknown, how many attempts the current gap has taken, and the
+approaches already ruled out. A successor resolves that section before dependent
+work, so an interrupted operation is verified rather than assumed and a known
+dead end is not retried. See the
+[persistent loop robustness rules](AGENTS.md#persistent-loop-robustness).
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'fontSize': '18px'}}}%%
+flowchart TD
+    R[Session starts or resumes] --> RC[Reconcile Loop continuity]
+    RC --> IF{In-flight action?}
+    IF -->|Yes| VF[Outcome UNKNOWN:<br/>verify actual state]
+    IF -->|No| CH[Choose next action:<br/>skip what is ruled out]
+    VF --> CH
+    CH --> WA[Record intent, then act]
+    WA --> WR[1. Write records and artifacts]
+    WR --> US[2. Update STATE.md]
+    US --> CL[3. Clear in-flight entry]
+    CL --> PG{New evidence?}
+    PG -->|Yes| CH
+    PG -->|No| ES[Change approach,<br/>rule out, or escalate]
+    ES --> CH
+```
+
+The numbered write order is what makes an interruption detectable: a crash
+leaves unreferenced evidence that reconciliation finds, rather than a checkpoint
+claiming evidence that was never written.
 
 A fresh agent using the [persistent loop prompt](#persistent-engineering-loop-prompt)
 checks the checkpoint against actual artifacts and relevant evidence, reconciling

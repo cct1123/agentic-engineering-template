@@ -3,7 +3,7 @@
 Reviewed 2026-09-09 against the supplied creation request, then updated for the
 hardware-free development and explicit candidate review workflow. Updated
 2026-09-10 for discussion → project setup → persistent engineering loop. Earlier
-source prompts are retained as historical material in `prompt log/`; README.md
+source prompts are retained as historical material in `prompt-log/`; README.md
 contains the two canonical prompts.
 
 Scope: tabletop workflow simulations and repository structure checks. The
@@ -278,7 +278,7 @@ guidance. Agent setup captures intent and unknowns in PROJECT.md and initializes
 STATE.md; the architecture shows these feeding the existing loop. No project
 scaffolding was added. Maintenance evidence stays here, leaving project state
 and records uninitialized for reuse. The supplied onboarding request is retained
-in `prompt log/` alongside the earlier historical requests.
+in `prompt-log/` alongside the earlier historical requests.
 
 ## Human-input provenance review — 2026-09-10
 
@@ -316,3 +316,22 @@ Both canonical prompts, both Mermaid diagrams, and AGENTS.md's hardware phase
 rules are unchanged from
 `a3eaeea`. `git diff --check` passes. This verifies document structure and the
 preserved guidance, not runtime enforcement of human-input recording.
+
+## Reproducible structural check — 2026-09-18
+
+The earlier "PASS — N structural checks" results above were produced by one-off
+scripts that were not committed, so they could not be reproduced from the
+repository. The check is now committed as `tools/validate_template.py` (standard
+library only) and runs in CI (`.github/workflows/validate.yml`). Run it with:
+
+```text
+python3 tools/validate_template.py .
+```
+
+It verifies the core files exist and are non-empty, that internal Markdown links
+and heading anchors resolve, that fenced blocks and tables are well formed, that
+no tracked path contains a space, and that STATE.md and outputs/REPORT.md remain
+uninitialized. The exact count it reports supersedes the historical figures above,
+which describe earlier revisions and uncommitted scripts. This is a structural and
+initial-state check, not a Mermaid rendering test or runtime enforcement of the
+instructions.

@@ -53,19 +53,24 @@ flowchart TD
         PS --> P[PROJECT.md: objective, criteria, constraints]
         PS --> S[STATE.md: canonical checkpoint]
         P --> C[Engineering coordinator: inspect requirements and current state]
-        S --> C
+        S --> RC[Resume: reconcile in-flight action, ownership,<br/>unapplied steering and stale evidence]
+        RC --> C
         E[Records and engineering artifacts] --> C
         C --> G[Identify highest-priority gap]
-        G --> D[Choose action and design]
+        G --> D[Choose action and design<br/>after reading the ruled-out list]
         D --> A{Allowed in phase, resources and authority available?}
-        A -->|Yes| I[Implement or investigate]
+        A -->|Yes| WA[Record intent before irreversible or long actions]
+        WA --> I[Implement or investigate]
         I --> T[Test / measure]
         T --> V[Diagnose / evaluate]
-        V --> U[Update state and evidence]
+        V --> U[Update state and evidence, then clear in-flight entry]
         U --> S
         U --> E
         U --> Q{Requirements satisfied?}
-        Q -->|No: inspect next gap| C
+        Q -->|No| SL{New evidence since the last attempt?}
+        SL -->|Yes: inspect next gap| C
+        SL -->|No: change approach, reframe, or switch gap| RO[Record ruled-out approach and reset the attempt count]
+        RO --> C
         Q -->|Yes| F[Final validation on final configuration]
         F --> K{Final validation passes?}
         K -->|No: record failure| V
@@ -74,6 +79,7 @@ flowchart TD
 
     A -->|Not yet| B[Defer action and record dependency]
     Q -->|Only external dependencies remain| B
+    RO -.->|Approaches exhausted: escalate one specific question| B
     B -->|Independent work remains| G
     B -->|Hardware-free work exhausted before integration| RG[Hardware-ready candidate and review gate above]
     B -->|No independent work, genuine blocker outside review gate| BO[BLOCKED report and exact resumption condition]
@@ -104,3 +110,12 @@ and its source separately from the agent's interpretation.
 The report describes the engineered system, configuration, demonstrated results,
 and operation. Optional specialists return bounded artifacts and evidence to the
 coordinator, which maintains the single canonical state.
+
+Across sessions the loop is made restartable by STATE.md's continuity fields.
+One session owns the checkpoint at a time. Intent for an irreversible or long
+action is recorded before the action, so an interrupted run leaves a detectable
+UNKNOWN outcome to verify rather than a silent gap. Evidence and artifacts are
+written before the state that references them, and the in-flight entry is cleared
+last. A cycle that produces no new evidence changes approach, switches gap, or is
+recorded as ruled out, so a successor neither repeats a dead end nor loops on one
+approach forever. See [persistent loop robustness](AGENTS.md#persistent-loop-robustness).

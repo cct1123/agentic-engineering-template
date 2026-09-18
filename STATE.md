@@ -23,6 +23,32 @@ A blocked requirement or missing hardware does not make the project BLOCKED whil
 useful independent work remains. Record checkpoint date/time and candidate or
 artifact revision/fingerprint after work begins. -->
 
+## Loop continuity
+
+Reconcile this section before dependent work; see
+[Persistent loop robustness](AGENTS.md#persistent-loop-robustness).
+
+- **Session owner / last checkpoint:** none. Record an identifier and a timestamp
+  with timezone while working; release it when finishing. Advisory, not a lock: a
+  successor may reclaim a stale entry and record the takeover.
+- **In-flight action:** none. Before an irreversible or long action, record the exact
+  operation, its expected observable effect, how to tell whether it completed, and
+  the verification or rollback step. A non-empty entry means the outcome is UNKNOWN:
+  verify actual state before repeating it.
+- **Attempts on current gap:** none. Reset when the gap changes; change approach or
+  escalate when consecutive attempts produce no new evidence.
+- **Effort limit:** none stated. Record any budget or stopping limit and what to do
+  when it is reached.
+
+### Ruled out / do not retry
+
+No approaches ruled out yet. Consult this list before choosing an action and add to
+it when an approach fails for an understood reason. Never delete an entry; mark it
+superseded when evidence changes.
+
+| Approach / hypothesis | Why ruled out (evidence) | Revisit if |
+| --- | --- | --- |
+
 ## Objective
 
 Not initialized. Source: [PROJECT.md](PROJECT.md#engineering-objective).

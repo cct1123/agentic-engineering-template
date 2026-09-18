@@ -36,8 +36,12 @@ Preserve existing work, the evidence workflow, and the hardware review gate.
 2. Compare the checkpoint with actual files, versions, and test results. Check
    device state only after the hardware review gate and within authorization.
    Reconcile interrupted work; never assume an unfinished command succeeded or
-   that a previously connected device is unchanged. At AWAITING_HUMAN_REVIEW,
-   remain stopped unless explicit approval for the candidate is recorded.
+   that a previously connected device is unchanged. Resolve any in-flight entry
+   and take ownership of the checkpoint before dependent work, and read the
+   ruled-out list before choosing an action; see
+   [Persistent loop robustness](#persistent-loop-robustness). At
+   AWAITING_HUMAN_REVIEW, remain stopped unless explicit approval for the
+   candidate is recorded.
 3. If the objective is absent, ask for it. Otherwise start useful work. Assign
    stable `REQ-001` identifiers in STATE.md with a source reference to human
    criteria, a validation method / `TEST-001`, status, and evidence. Preserve
@@ -189,7 +193,9 @@ STATE.md's last applied H ID only after those changes and all earlier H entries
 are reconciled. A pending clarification remains an explicit unresolved request.
 
 Update configuration, current gaps, diagnosis, priority, next action, and blockers.
-Capture interrupted/pending operations and recovery details if relevant. Save
+Capture interrupted/pending operations and recovery details if relevant, using the
+in-flight entry and write ordering in
+[Persistent loop robustness](#persistent-loop-robustness). Save
 non-secret authorization scope and conditions needed by a successor, with the
 source of that authority; transient device state must be checked again. Keep
 detailed logs and large datasets outside STATE.md and link to them.
@@ -217,6 +223,60 @@ hardware, information, access, or a controlled action, mark the session BLOCKED,
 fill the report as a blocked handoff, and state the exact resumption condition.
 BLOCKED and AWAITING_HUMAN_REVIEW are never validated completion.
 Files preserve continuity; they do not keep an agent running after its session.
+
+## Persistent loop robustness
+
+These rules keep a multi-session loop correct across interruption, context loss,
+agent replacement, and concurrent runs. They apply in every phase.
+
+**One writer at a time.** STATE.md has a single owner. Record the session owner
+and checkpoint time before dependent work, and release it when finishing. The
+marker is advisory, not a lock: a successor finding an owner entry older than the
+project's stated staleness window, with no evidence of a live session, reclaims
+ownership and records the takeover. Never edit canonical state from two
+concurrent sessions. A stale owner entry or an in-progress phase is not proof
+that a session is still running.
+
+**Record intent before irreversible or long actions.** When an action's
+completion cannot be cheaply re-derived from artifacts — device writes,
+actuation, destructive tests, long runs, migrations, purchases, or any external
+change — first record in STATE.md the exact operation, its expected observable
+effect, how a successor can tell whether it completed, and the verification or
+rollback step. Save that entry before acting.
+
+**Treat an unresolved in-flight entry as an UNKNOWN outcome.** A successor
+resolves it before dependent work: verify the actual artifact, system, or device
+state within the current phase and authorization, and record what was found.
+Never assume the action succeeded, and never blindly repeat it; a non-idempotent
+operation requires that verification first.
+
+**Order writes so an interruption is detectable.** Append E/D records and save
+artifacts first, update STATE.md to reference them next, then clear the in-flight
+entry. An interruption then leaves unreferenced evidence, which reconciliation
+finds, rather than a checkpoint asserting evidence that was never written.
+
+**Detect a stalled loop.** Track attempts against the current gap in STATE.md and
+reset the count when the gap changes. Repeating an action that produced no new
+observable is not progress. When consecutive attempts yield no new evidence,
+escalate through: change the approach or the discriminating test; decompose or
+reframe the gap; work an independent gap; record the approach as ruled out;
+request the smallest specific human input. Never reattempt one approach
+indefinitely, within a session or across sessions.
+
+**Keep negative knowledge cheap to find.** Maintain the ruled-out list in
+STATE.md: the rejected approach or hypothesis, a link to the evidence that
+rejected it, and the condition that would justify revisiting. Consult it when
+choosing an action, and add to it when an approach fails for an understood
+reason. Never delete an entry; mark it superseded when evidence changes. This
+list is what makes it safe not to read every historical record on resume.
+
+**Confirm delegated work before repeating it.** After an interruption, check
+whether an outstanding assignment actually finished and whether its artifacts
+exist before reissuing it.
+
+**Bound the effort.** Respect any stated budget or stopping limit. On reaching
+one, checkpoint, record the remaining consequential gap and the approaches
+already evaluated, and stop rather than continuing indefinitely.
 
 ## Engineering boundaries, hardware, and calibration
 
