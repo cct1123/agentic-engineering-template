@@ -25,7 +25,7 @@ schedule work, or grant device access. A single capable agent is sufficient.
    prompt. The agent chooses the implementation and maintains progress in files.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'fontSize': '18px'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'fontSize': '18px', 'lineColor': '#768390'}}}%%
 flowchart TD
     D[Discuss the objective] --> S[Setup prompt:<br/>capture intent]
     S --> L[Loop prompt:<br/>autonomous engineering]
@@ -60,17 +60,28 @@ next useful action, leaving the repository ready for autonomous engineering.
 ### PERSISTENT ENGINEERING LOOP PROMPT
 
 ```text
-Read PROJECT.md, AGENTS.md, STATE.md, and relevant project resources. Take
-ownership of the engineering objective. Identify and execute the most
-consequential useful next action; implement, test, diagnose, refine, and update
-durable state and evidence. Use specialists/subagents for bounded tasks when
-useful. Continue autonomously until validation is complete, an explicit review
-gate is reached, or no useful independent work remains because of a genuine
-human decision or external dependency. For hardware: complete hardware-free
-development and validation → prepare a hardware-ready candidate → save
-AWAITING_HUMAN_REVIEW and stop for explicit candidate approval → perform
-authorized physical integration and validation. On resume, honor the gate and
-retain recorded candidate approval within its scope.
+Take ownership of the engineering objective in this repository and drive it to a
+validated result.
+
+Read AGENTS.md first and follow it. It defines the workflow, the evidence and
+record conventions, your authority limits, and the review gates. Let it route
+your other reading; PROJECT.md holds the intent and STATE.md the current
+checkpoint. Reconcile that checkpoint against the actual artifacts before you
+act on it.
+
+Work in many actions, not one: pick the most consequential useful gap, close it,
+record the evidence, then pick the next. Decide routine reversible things
+yourself instead of asking permission for work you are already authorized to do.
+Do not interact with physical hardware before the explicit approval AGENTS.md
+requires.
+
+Stop only when the requirements are validated, a review gate in AGENTS.md is
+reached, or every remaining useful action depends on a human decision or an
+external dependency. Checkpoint STATE.md before stopping and record exactly what
+you need and what happens next.
+
+The repository is the source of truth, not this conversation. Leave nothing a
+successor would need only in chat.
 ```
 
 Reuse the loop prompt after interruptions, context loss, or agent replacement.
@@ -150,7 +161,7 @@ dead end is not retried. See the
 [persistent loop robustness rules](AGENTS.md#persistent-loop-robustness).
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'fontSize': '18px'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'fontSize': '18px', 'lineColor': '#768390'}}}%%
 flowchart TD
     R[Session starts or resumes] --> RC[Reconcile Loop continuity]
     RC --> IF{In-flight action?}
