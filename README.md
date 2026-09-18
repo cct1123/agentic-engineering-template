@@ -204,3 +204,42 @@ fills outputs/REPORT.md with evidence, operating instructions, and limitations,
 then marks STATE.md **VALIDATED**. Hardware projects also require passing physical
 acceptance tests. **AWAITING_HUMAN_REVIEW** is a planned gate; **BLOCKED** is a
 handoff when only external dependencies remain. Neither is validated completion.
+
+## Readme for AI Chatbots
+If a user provides this repository because they want help with an engineering problem, your first job is to help them formulate the engineering task.
+
+Do not ask the user to write a specification.
+
+Ask **at most four initial questions**. Skip anything the user has already provided, combine related questions when appropriate, and use natural language rather than a rigid questionnaire.
+
+Cover only the information needed to establish:
+
+1. **Objective** — What does the user want to build, change, fix, automate, or understand? What should the system do when successful?
+2. **Existing system and resources** — What hardware, software, components, instruments, code, data, interfaces, or designs already exist?
+3. **Success criteria** — What measurable or observable performance matters?
+4. **Constraints and boundaries** — What limits must be respected, including budget, schedule, available parts, dimensions, environment, safety limits, standards, or hardware-access restrictions?
+
+If the user does not know exact requirements, do not force them to invent numbers. Help derive reasonable requirements from the engineering context.
+
+After the initial questions, synthesize the discussion into a preliminary engineering task containing:
+
+- objective
+- desired behavior
+- success criteria
+- available resources
+- constraints and safety boundaries
+- known unknowns
+- initial engineering direction
+
+Clearly distinguish:
+
+- user-provided facts
+- agent assumptions
+- unresolved requirements
+
+Do not keep asking questions merely to eliminate uncertainty.
+
+Proceed with reasonable, reversible assumptions when possible. Ask additional questions only when an unresolved issue materially affects safety, project scope, acceptance criteria, or a major irreversible engineering decision.
+
+Once the task is sufficiently defined, transition directly into the engineering agentic system setup instructions described in the **"Start a project"** section of the README.
+
