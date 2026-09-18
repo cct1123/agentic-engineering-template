@@ -189,57 +189,52 @@ bypass AWAITING_HUMAN_REVIEW; applicable recorded approval is retained within it
 scope. A stopped agent must be restarted by a human or an external runner; these
 files preserve progress between sessions.
 
-## Human actions and completion
+## Readme for AI Chatbots or Assistants
 
-The agent continues independent work until the review gate or a genuine human
-decision or external dependency prevents further progress. It records the exact
-request and resumption condition in STATE.md. Hardware limits and authorized
-operations belong in PROJECT.md; candidate approval covers only its recorded
-scope. See [AGENTS.md](AGENTS.md#physical-action-and-human-intervention) for the
-operating boundaries and when renewed review is needed.
+If a user provides this repository because they want help with an engineering problem, first help them formulate the engineering task.
 
-Completion requires current evidence for all required criteria, final integrated
-validation, calibration where required, and reproducible operation. The agent
-fills outputs/REPORT.md with evidence, operating instructions, and limitations,
-then marks STATE.md **VALIDATED**. Hardware projects also require passing physical
-acceptance tests. **AWAITING_HUMAN_REVIEW** is a planned gate; **BLOCKED** is a
-handoff when only external dependencies remain. Neither is validated completion.
+### Conversation style
 
-## Readme for AI Chatbots
-If a user provides this repository because they want help with an engineering problem, your first job is to help them formulate the engineering task.
+Keep the interaction **short, conversational, and progressive**.
 
-Do not ask the user to write a specification.
+- Ask **one question per message**.
+- Ask **at most four initial questions total**.
+- Ask only the next most useful question based on what the user has already said.
+- Skip questions whose answers are already known.
+- Stop asking questions early if the task is sufficiently clear.
+- Keep responses concise. Do not explain the entire framework, present a long checklist, or dump multiple questions at once.
+- Do not ask the user to write a specification.
+- Do not require the user to know engineering terminology.
 
-Ask **at most four initial questions**. Skip anything the user has already provided, combine related questions when appropriate, and use natural language rather than a rigid questionnaire.
+The initial conversation should establish, as needed:
 
-Cover only the information needed to establish:
+1. **Objective** — What does the user want to build, change, fix, automate, or understand?
+2. **Existing system and resources** — What relevant hardware, software, components, instruments, code, data, interfaces, or designs already exist?
+3. **Success criteria** — What observable or measurable behavior matters?
+4. **Constraints and boundaries** — What important limits must be respected, such as budget, dimensions, available parts, environment, schedule, safety, standards, or hardware-access restrictions?
 
-1. **Objective** — What does the user want to build, change, fix, automate, or understand? What should the system do when successful?
-2. **Existing system and resources** — What hardware, software, components, instruments, code, data, interfaces, or designs already exist?
-3. **Success criteria** — What measurable or observable performance matters?
-4. **Constraints and boundaries** — What limits must be respected, including budget, schedule, available parts, dimensions, environment, safety limits, standards, or hardware-access restrictions?
+Do not ask these four questions as a list. Select and ask them **one at a time**, adapting each next question to the user's previous answer.
 
-If the user does not know exact requirements, do not force them to invent numbers. Help derive reasonable requirements from the engineering context.
+If the user does not know an exact requirement, do not force them to invent one. Help determine reasonable requirements later from calculations, research, tests, or engineering context.
 
-After the initial questions, synthesize the discussion into a preliminary engineering task containing:
+### When enough information is available
+
+Briefly synthesize the discussion into a preliminary engineering task covering:
 
 - objective
 - desired behavior
 - success criteria
 - available resources
-- constraints and safety boundaries
-- known unknowns
+- important constraints and safety boundaries
+- important unknowns
 - initial engineering direction
 
-Clearly distinguish:
+Keep this synthesis concise. Clearly distinguish user-provided facts, agent assumptions, and unresolved requirements.
 
-- user-provided facts
-- agent assumptions
-- unresolved requirements
+Do not continue questioning merely to remove uncertainty. Proceed with reasonable, reversible assumptions when possible.
 
-Do not keep asking questions merely to eliminate uncertainty.
+Ask an additional question later only when the answer is necessary for safety, materially changes the scope or acceptance criteria, or determines a major irreversible engineering decision.
 
-Proceed with reasonable, reversible assumptions when possible. Ask additional questions only when an unresolved issue materially affects safety, project scope, acceptance criteria, or a major irreversible engineering decision.
+Once the task is sufficiently defined, transition directly into the engineering agentic system setup instructions in the **"Start a project"** section of this README.
 
-Once the task is sufficiently defined, transition directly into the engineering agentic system setup instructions described in the **"Start a project"** section of the README.
 
